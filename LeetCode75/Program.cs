@@ -1,0 +1,399 @@
+﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+
+namespace LeetCode75
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            RunEncodeDecode();
+
+
+
+            Console.ReadLine();
+        }
+
+        #region InProgress
+
+        public static void RunEncodeDecode()
+        {
+            List<string> strs = new List<string>() { "" };
+            
+            var str = Q_Encode(strs);
+            var strsDecoded = Q_Decode(str);
+
+            foreach (var word in strsDecoded)
+            {
+                Console.WriteLine(word);
+            }
+        }
+        public static string Q_Encode(IList<string> strs)
+        {
+            string result = "";
+            int addition = 256;
+            bool isFirstChar = false;
+
+            if (strs.Count == 0)
+            {
+                return "";
+            }
+            if (strs.Count == 1)
+            {
+                return strs[0];
+            }
+            foreach (var s in strs)
+            {
+                isFirstChar = true;
+                foreach (var c in s)
+                {
+                    // Since a is 97, if we add 3 then a will be 100
+                    int cByte = c + 3;
+                    string encodedC = "";
+
+                    if (isFirstChar)
+                    {
+                        cByte += addition;
+                        isFirstChar = false;
+                    }
+
+                    encodedC = cByte.ToString();
+                    result += encodedC;
+                }
+            }
+
+            return result;
+        }
+
+        public static List<string> Q_Decode(string s)
+        {
+            int len = s.Length;
+
+            string word = "";
+            List<string> words = new List<string>();
+            bool inWord = true;
+
+            if (s.Length == 0)
+            {
+                return new List<string>() { };
+            }
+            for (int i = 0; i < len; i+=3)
+            {
+                int intC = Int32.Parse((s[i].ToString() + s[i+1].ToString() + s[i+2].ToString()))-3;
+  
+                if(intC > 256)
+                {
+                    intC -= 256;
+
+                    if(word != "")
+                    {
+                        words.Add(word);
+                        word = "";
+                        inWord = true;
+                    }
+                } 
+                if (inWord)
+                {
+                    word += (char)intC;
+                }
+            }
+
+            words.Add(word);
+
+            return words;
+        }
+
+
+        #endregion
+
+        #region Submitted
+
+        public static void RunTopKFrequent()
+        {
+            var input = new int[] { 1, 2, 2, 3, 3, 3 };
+            var k = 2;
+
+            var result = TopKFrequent(input, k);
+
+            foreach (var item in result)
+            {
+                Console.Write(" " + item + " ");
+            }
+
+        }
+        public static int[] TopKFrequent(int[] nums, int k)
+        {
+            var freqDict = new Dictionary<int, int>();
+            var revDict = new Dictionary<int, List<int>>();
+            var result = new List<int>();
+
+            // Add numbers to dict
+            foreach (int i in nums)
+            {
+                if (freqDict.ContainsKey(i))
+                {
+                    freqDict[i]++;
+                }
+                else
+                {
+                    freqDict.Add(i, 1);
+                }
+            }
+
+            // Build a reverse dict ! 
+            foreach (var item in freqDict)
+            {
+                if (revDict.ContainsKey(item.Value))
+                {
+                    revDict[item.Value].Add(item.Key);
+
+                }
+                else
+                {
+                    revDict.Add(item.Value, new List<int> { item.Key });
+                }
+            }
+
+            int k_Tracker = 0;
+            // Since max possible occurancce is len of initial array, we can start from n and counting down
+            for (int i = nums.Length; i >= 0; i--)
+            {
+                // Add if neccessory
+                if (revDict.ContainsKey(i))
+                {
+                    foreach (var x in revDict[i])
+                    {
+                        if (k_Tracker > k - 1)
+                        {
+                            return result.ToArray();
+                        }
+                        else
+                        {
+                            result.Add(x);
+                        }
+                        k_Tracker++;
+                    }
+                }
+
+            }
+
+            return result.ToArray();
+        }
+
+        public static void RunGroupAnagrams()
+        {
+            var input = new string[] { "bdddddddddd", "cbbbbbbbbbb" };
+            var result = GroupAnagrams(input);
+
+            foreach (var str in result)
+            {
+                Console.Write("[ ");
+
+                foreach (var subStr in str)
+                {
+                    Console.Write(" " + subStr + " ");
+                }
+                Console.WriteLine(" ]");
+            }
+
+        }
+        public static List<List<string>> GroupAnagrams(string[] strs)
+        {
+            var result = new List<List<string>>();
+            // If one , then just return right away
+            if (strs.Length == 1)
+            {
+                return new List<List<string>> { new List<string> { strs[0] } };
+            }
+
+            var occurLst = new List<int[]>();
+            foreach (string str in strs)
+            {
+                Console.WriteLine("str " + str);
+                // Count Occurance
+                int[] count = new int[26];
+                foreach (char c in str)
+                {
+                    count[c - 'a']++;
+                }
+                occurLst.Add(count);
+            }
+
+            // Now map the array into a dict key so we can lookup unique values, add that match to sublist.
+            var occurDictLst = new List<Dictionary<string, List<int>>>();
+
+            int inputPos = 0;
+            int outputPos = 0;
+
+            var occurDict = new Dictionary<string, int>();
+            foreach (var occur in occurLst)
+            {
+                var str = "";
+                foreach (var x in occur)
+                {
+                    str += x.ToString() + "|";
+                }
+
+                Console.WriteLine(str);
+
+                if (occurDict.ContainsKey(str))
+                {
+                    // If the current string has a occurance match, add that match to sublist.
+
+                    var value = occurDict[str];
+                    var strAdd = strs[inputPos];
+                    result[value].Add(strAdd);
+
+                }
+                else
+                {
+                    // If the string is new, add the new string to the list
+
+                    occurDict.Add(str, outputPos);
+                    result.Add(new List<string> { strs[inputPos] });
+                    outputPos++;
+                }
+                inputPos++;
+            }
+
+            return result;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunTwoSum()
+        {
+            var result = TwoSum(new int[] { 4, 5, 6 }, 10);
+
+            foreach (var i in result)
+            {
+                Console.WriteLine(i);
+            }
+
+
+        }
+        public static int[] TwoSum(int[] nums, int target)
+        {
+            var intDict = new Dictionary<int, int>();
+            var diffPos = 0;
+            int i = 0;
+            foreach (int val in nums)
+            {
+                if (intDict.ContainsKey(val))
+                {
+                    intDict[val] = i;
+                }
+                else
+                {
+                    intDict.Add(val, i);
+                }
+
+                i++;
+            }
+            int j = 0;
+            foreach (int val in nums)
+            {
+                var diff = intDict.TryGetValue(target - val, out diffPos);
+                if (diff && diffPos != j)
+                {
+                    return new int[] { j, diffPos };
+                }
+                j++;
+            }
+
+            return new int[] { 0, 0 };
+        }
+        /////////////////////////////////////////////////////////////////////
+        public static void RunIsAnagram()
+        {
+            //string s = "racecar";
+            //string t = "carrace";
+
+            string s = "jam";
+            string t = "jar";
+
+            var result = IsAnagram(s,t);
+            Console.WriteLine(result.ToString());
+        }
+        public static bool IsAnagram(string s, string t)
+        {
+            // Check is both strings is the same length else false
+            if (s.Length != t.Length)
+            {
+                return false;
+            }
+
+            // Add string to a dict
+            var dicS = AddStringToDict(s);
+            var dicT = AddStringToDict(t);
+
+            foreach (var charValuePair in dicS)
+            {
+                var dicTValuePair = dicT.TryGetValue(charValuePair.Key, out int val); 
+                // If the char is not found in first string...
+                if (!dicTValuePair)
+                {
+                    return false;
+                }
+                // If the number of char is different from the first..
+                if (val != charValuePair.Value)
+                {
+                    return false;
+                }
+
+            }
+
+            return true;
+        }
+        public static Dictionary<char, int> AddStringToDict(string s)
+        {
+            var dicS = new Dictionary<char, int>();
+            foreach (var c in s)
+            {
+                if (dicS.ContainsKey(c))
+                {
+                    dicS[c]++;
+                }
+                else
+                {
+                    dicS.Add(c, 1);
+                }
+            }
+            return dicS;
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunContainsDuplicate()
+        {
+            int[] testInput = new int[] { 1, 2, 3, 3 };
+            var result = hasDuplicate(testInput);
+            Console.WriteLine(result.ToString());
+        }
+        public static bool hasDuplicate(int[] nums)
+        {
+            var dic = new Dictionary<int, int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (dic.ContainsKey(nums[i]))
+                {
+                    return true;
+                }
+                else
+                {
+                    dic.Add(nums[i], 1);
+                }
+            }
+            return false;
+        }
+        /////////////////////////////////////////////////////////////////////
+        #endregion
+    }
+}
