@@ -15,7 +15,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunEncodeDecode();
+            RunProductExceptSelf();
 
 
 
@@ -24,10 +24,125 @@ namespace LeetCode75
 
         #region InProgress
 
+        public static void RunIsValidSudoku()
+        {
+
+        }
+
+        public static bool IsValidSudoku(char[][] board)
+        {
+
+            return false;
+        }
+
+
+        #endregion
+
+
+        #region Submitted
+        /////////////////////////////////////////////////////////////////////
+        public static void RunProductExceptSelf()
+        {
+            var input = new int[] { -1, 1, 0, -3, 3 };
+            var result = ProductExceptSelf(input);
+
+            foreach (var x in result)
+            {
+                Console.WriteLine(x);
+            }
+        }
+        // O(n) solution !!
+        public static int[] ProductExceptSelf(int[] nums)
+        {
+
+            var totalMul = 1;
+            var negCount = 0;
+            int zeroCount = 0;
+
+            List<int> result = new List<int>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] != 0)
+                {
+                    totalMul *= nums[i];
+                }
+                else
+                {
+                    zeroCount++;
+                }
+                if (nums[i] < 0)
+                {
+                    negCount++;
+                }
+            }
+
+            foreach (var num in nums)
+            {
+                // If the number is larger than 0 but there is a zero elsewhere, then just 0 as result.
+                if (num > 0)
+                {
+                    if (zeroCount == 0)
+                    {
+                        result.Add(totalMul / num);
+                    }
+                    else
+                    {
+                        result.Add(0);
+                    }
+                }
+                else
+                {
+                    // If there is only 1 zero in the array and we take out a zero, then no change.
+                    if (num == 0)
+                    {
+                        if (zeroCount == 1)
+                        {
+                            result.Add(totalMul);
+                        }
+                        else
+                        {
+                            result.Add(0);
+                        }
+
+                    }
+
+                    // Dealing with neg, is balanced, then result should be pos, else neg , of course we need to check if there is a zero too. 
+                    if (num < 0)
+                    {
+                        if (zeroCount > 0)
+                        {
+                            result.Add(0);
+                        }
+                        else
+                        {
+                            var count = negCount - 1;
+
+                            if ((count % 2) == 0)
+                            {
+                                result.Add(Math.Abs(totalMul / Math.Abs(num)));
+                            }
+                            else
+                            {
+                                result.Add(-(totalMul / Math.Abs(num)));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        // Convert each char to Byte, then we can denode the starting char of each word as a value larger than UTF8 (255). 
+        // This implementation do not require any additional characters to be added. More complex though! 
+
         public static void RunEncodeDecode()
         {
-            List<string> strs = new List<string>() { "" };
-            
+            List<string> strs = new List<string>() { "testing", "abs", "xyz" };
+
             var str = Q_Encode(strs);
             var strsDecoded = Q_Decode(str);
 
@@ -50,12 +165,13 @@ namespace LeetCode75
             {
                 return strs[0];
             }
+
             foreach (var s in strs)
             {
                 isFirstChar = true;
                 foreach (var c in s)
                 {
-                    // Since a is 97, if we add 3 then a will be 100
+                    // Since a is 97, if we add 3 then a will be 100, so we can work with 3s for each charactor in decode.
                     int cByte = c + 3;
                     string encodedC = "";
 
@@ -85,21 +201,21 @@ namespace LeetCode75
             {
                 return new List<string>() { };
             }
-            for (int i = 0; i < len; i+=3)
+            for (int i = 0; i < len; i += 3)
             {
-                int intC = Int32.Parse((s[i].ToString() + s[i+1].ToString() + s[i+2].ToString()))-3;
-  
-                if(intC > 256)
+                int intC = Int32.Parse((s[i].ToString() + s[i + 1].ToString() + s[i + 2].ToString())) - 3;
+
+                if (intC > 256)
                 {
                     intC -= 256;
 
-                    if(word != "")
+                    if (word != "")
                     {
                         words.Add(word);
                         word = "";
                         inWord = true;
                     }
-                } 
+                }
                 if (inWord)
                 {
                     word += (char)intC;
@@ -111,11 +227,8 @@ namespace LeetCode75
             return words;
         }
 
-
-        #endregion
-
-        #region Submitted
-
+        /////////////////////////////////////////////////////////////////////
+        // Use a reverse dict , bucket sort.
         public static void RunTopKFrequent()
         {
             var input = new int[] { 1, 2, 2, 3, 3, 3 };
@@ -188,6 +301,7 @@ namespace LeetCode75
             return result.ToArray();
         }
 
+        /////////////////////////////////////////////////////////////////////
         public static void RunGroupAnagrams()
         {
             var input = new string[] { "bdddddddddd", "cbbbbbbbbbb" };
