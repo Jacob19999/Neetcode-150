@@ -11,11 +11,11 @@ using System.Xml.Linq;
 
 namespace LeetCode75
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            RunProductExceptSelf();
+            RunIsValidSudoku();
 
 
 
@@ -24,22 +24,115 @@ namespace LeetCode75
 
         #region InProgress
 
-        public static void RunIsValidSudoku()
-        {
-
-        }
-
-        public static bool IsValidSudoku(char[][] board)
-        {
-
-            return false;
-        }
 
 
         #endregion
 
 
         #region Submitted
+
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunIsValidSudoku()
+        {
+            /*
+            char[][] board = new char[][]
+            {
+                new char[] { '1', '2', '.', '.', '3', '.', '.', '.', '.' },
+                new char[] { '1', '.', '.', '5', '.', '.', '.', '.', '.' },
+                new char[] { '.', '9', '8', '.', '.', '.', '.', '.', '3' },
+                new char[] { '5', '.', '.', '.', '6', '.', '.', '.', '4' },
+                new char[] { '.', '.', '.', '8', '.', '3', '.', '.', '5' },
+                new char[] { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+                new char[] { '.', '.', '.', '.', '.', '.', '2', '.', '.' },
+                new char[] { '.', '.', '.', '4', '1', '9', '.', '.', '8' },
+                new char[] { '.', '.', '.', '.', '8', '.', '.', '7', '9' }
+            };
+            */
+            char[][] board =
+            {
+                new char[] { '1', '2', '.', '.', '3', '.', '.', '.', '.' },
+                new char[] { '4', '.', '.', '5', '.', '.', '.', '.', '.' },
+                new char[] { '.', '9', '1', '.', '.', '.', '.', '.', '3' },
+                new char[] { '5', '.', '.', '.', '6', '.', '.', '.', '4' },
+                new char[] { '.', '.', '.', '8', '.', '3', '.', '.', '5' },
+                new char[] { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+                new char[] { '.', '.', '.', '.', '.', '.', '2', '.', '.' },
+                new char[] { '.', '.', '.', '4', '1', '9', '.', '.', '8' },
+                new char[] { '.', '.', '.', '.', '8', '.', '.', '7', '9' }
+            };
+
+
+
+            Console.WriteLine("Is Valid = " + IsValidSudoku(board));
+        }
+
+        public static bool IsValidSudoku(char[][] board)
+        {
+            // Check each Col
+            for (int col = 0; col < 9; col++)
+            {
+                HashSet<char> seen = new HashSet<char>();
+                for (int i = 0; i < 9; i++)
+                {
+                    if (board[i][col] != '.')
+                    {
+                        if (seen.Contains(board[i][col]))
+                        {
+                            return false;
+                        }
+                        seen.Add(board[i][col]);
+                    }
+                }
+            }
+
+            // Check each row
+            for (int row = 0; row < 9; row++)
+            {
+                HashSet<char> seen = new HashSet<char>();
+                for (int i = 0; i < 9; i++)
+                {
+                    if (board[row][i] != '.')
+                    {
+                        if (seen.Contains(board[row][i]))
+                        {
+                            return false;
+                        }
+                        seen.Add(board[row][i]);
+                    }
+                }
+            }
+
+
+            // Use a dict to check that each 3x3 squares has duplicates.
+
+            for (int square = 0; square < 9; square++)
+            {
+                HashSet<char> seen = new HashSet<char>();
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int row = (square / 3) * 3 + i;
+                        int col = (square % 3) * 3 + j;
+
+                        char item = board[row][col];
+                        if (item != '.')
+                        {
+                            if (seen.Contains(item))
+                            {
+                                return false;
+                            }
+                            seen.Add(item);
+                        }
+
+                    }
+                }
+            }
+
+            return true;
+        }
+
         /////////////////////////////////////////////////////////////////////
         public static void RunProductExceptSelf()
         {
