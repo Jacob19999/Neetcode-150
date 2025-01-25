@@ -15,7 +15,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunIsValidSudoku();
+            RunIsPalindrome();
 
 
 
@@ -30,7 +30,54 @@ namespace LeetCode75
 
 
         #region Submitted
+        /////////////////////////////////////////////////////////////////////
+        public static void RunIsPalindrome()
+        {
+            string s = "0p";
+            Console.Write(IsPalindrome(s));
 
+        }
+        public static bool IsPalindrome(string s)
+        {
+
+            string concatStr = "";
+            s = s.ToLower();
+
+            // Since a = 097 and z = 122 in utf8
+            foreach (char c in s)
+            {
+                byte tempByte = (byte)c;
+
+                if ((tempByte >= 97 && tempByte <= 122) || (tempByte >= 48 && tempByte <= 57))
+                {
+                    concatStr += c;
+                }
+            }
+
+            // Some edge cases...
+            if (concatStr == "")
+            {
+                return true;
+            }
+            if (concatStr.Length == 1)
+            {
+                return true;
+            }
+
+            var endPoint = concatStr.Length - 1;
+            // Now start from both sides and go inwards 
+            for (int i = 0; i < (concatStr.Length / 2); i++)
+            {
+                if (concatStr[i] != concatStr[endPoint])
+                {
+                    return false;
+                }
+
+                endPoint--;
+            }
+
+            return true;
+        }
 
         /////////////////////////////////////////////////////////////////////
         public static void RunIsValidSudoku()
