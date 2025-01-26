@@ -15,7 +15,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunIsPalindrome();
+            RunKthLargest();
 
 
 
@@ -25,11 +25,63 @@ namespace LeetCode75
         #region InProgress
 
 
-
         #endregion
 
 
         #region Submitted
+        /////////////////////////////////////////////////////////////////////
+        // Different from question, this is a custom heap implementation.
+
+        public static void RunKthLargest()
+        {
+            /*
+            var myHeap = new JacobsHeapMin();
+
+            myHeap.InsertHeap(3);
+            myHeap.InsertHeap(4);
+            myHeap.InsertHeap(8);
+            myHeap.InsertHeap(9);
+            myHeap.InsertHeap(7);
+            myHeap.InsertHeap(10);
+            myHeap.InsertHeap(9);
+            myHeap.InsertHeap(15);
+            myHeap.InsertHeap(2);
+            myHeap.InsertHeap(1);
+
+            myHeap.RemoveSmallest();
+            myHeap.RemoveSmallest();
+
+            myHeap.DisplayHeap();
+
+            */
+
+            // Custom Heap implementation Min heap.
+            var Heap = new KthLargest(4, new int[] { 10, 2, 3, 8, 1, 2 });
+        }
+
+        public class KthLargest
+        {
+            private JacobsHeapMin newHeap = new JacobsHeapMin();
+
+            public KthLargest(int k, int[] nums)
+            {
+
+                foreach (var num in nums)
+                {
+                    newHeap.InsertHeap(num);
+                }
+
+                newHeap.DisplayHeap();
+                var result = newHeap.GetKLargest(k);
+
+                Console.WriteLine(result);
+            }
+
+            public int Add(int val)
+            {
+                return 0;
+            }
+        }
         /////////////////////////////////////////////////////////////////////
         public static void RunIsPalindrome()
         {
@@ -651,3 +703,147 @@ namespace LeetCode75
         #endregion
     }
 }
+
+
+
+#region Utils
+
+public class JacobsHeapMin
+{
+    List<int> heapList = new List<int>();
+
+    public JacobsHeapMin()
+    {
+    }
+
+    public int GetParentPos(int pos)
+    {
+        return (pos - 1) / 2;
+    }
+
+    public int GetLeftChildPos(int pos)
+    {
+        return (2 * pos) + 1;
+    }   
+    public int GetRightChildPos(int pos)
+    {
+        return (2 * pos) + 2;
+    }
+
+    public int Swap(int curPos)
+    {
+        if(curPos == 0)
+        {
+            return -1;
+        }
+
+        int parentPos = GetParentPos(curPos);
+        int parentVal = heapList[parentPos];
+        int currentVal = heapList[curPos];
+
+        // If the parent node is larger then swap with child
+        if (parentVal > currentVal)
+        {
+            heapList[parentPos] = currentVal;
+            heapList[curPos] = parentVal;
+
+            return parentPos;
+        }
+        return -1;
+    }
+
+    public void InsertHeap(int val)
+    {
+        heapList.Add(val);
+
+        int lastPos = heapList.Count - 1;
+        var swapPos = lastPos;
+
+        while (swapPos != -1)
+        {
+            swapPos = Swap(swapPos);
+        }
+    }
+
+    public void RemoveSmallest()
+    {
+        if(heapList.Count == 1)
+        {
+            heapList.RemoveAt(0);
+            return;
+        }
+
+        // Remove root node, and take the last node to root.
+        var lastNodePos = heapList.Count - 1;
+        var lastNodeVal = heapList[lastNodePos];
+
+        heapList[0] = lastNodeVal;
+        heapList.RemoveAt(lastNodePos);
+
+        // Recursive swap
+        SwapPosSmallerChild(0);
+
+    }
+
+    public void SwapPosSmallerChild(int parentPos)
+    {
+        int heapLen = heapList.Count;
+
+        // Get parent value
+        int parentVal = heapList[parentPos];
+
+        // Get positions of left and right children
+        int leftChildPos = GetLeftChildPos(parentPos);
+        int rightChildPos = GetRightChildPos(parentPos);
+
+        // Determine the smallest child
+        int smallestChildPos = -1;
+
+        if (leftChildPos < heapLen && heapList[leftChildPos] < parentVal)
+        {
+            smallestChildPos = leftChildPos;
+        }
+
+        if (rightChildPos < heapLen && heapList[rightChildPos] <
+            (smallestChildPos != -1 ? heapList[smallestChildPos] : parentVal))
+        {
+            smallestChildPos = rightChildPos;
+        }
+
+        // Swap with the smallest child if needed
+        if (smallestChildPos != -1)
+        {
+            heapList[parentPos] = heapList[smallestChildPos];
+            heapList[smallestChildPos] = parentVal;
+
+            // Recursively heapify the affected subtree
+            SwapPosSmallerChild(smallestChildPos);
+        }
+    }
+
+    public int GetKLargest(int k)
+    {
+        int removeCount = heapList.Count - k;
+
+        for (int i = 0; i <= removeCount; i++) {
+            RemoveSmallest();
+        }
+
+        return GetSmallest();
+    }
+    public int GetSmallest()
+    {
+        return heapList[0];
+    }
+
+    public void DisplayHeap()
+    {
+        foreach (var val in heapList)
+        {
+            Console.WriteLine(val.ToString());
+        }
+    }
+
+}
+
+#endregion
