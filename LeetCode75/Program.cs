@@ -16,7 +16,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunMinCostClimbingStairs();
+            RunParenthesesIsValid();
 
 
 
@@ -24,6 +24,65 @@ namespace LeetCode75
         }
 
         #region InProgress
+
+        public static void RunParenthesesIsValid()
+        {
+            string input = "((";
+            Console.Write(ParenthesesIsValid(input));
+
+        }
+        public static bool ParenthesesIsValid(string s)
+        {
+            Dictionary<char, char> charDict = new Dictionary<char, char> {
+            { ')', '(' },
+            { ']', '[' },
+            { '}', '{' }};
+
+            if (s.Length == 0)
+            {
+                return true;
+            }
+            if(s.Length % 2 != 0)
+            {
+                return false;
+            }
+
+            var stack = new Stack<char>();
+            char temp = '.';
+
+            foreach (char c in s)
+            {
+                var isInStack = charDict.TryGetValue(c, out temp);
+
+                if (!isInStack)
+                {
+                    stack.Push(c);
+                }
+                else
+                {
+                    if (stack.Count > 0 && stack.Peek() == temp)
+                    {
+                        stack.Pop();
+
+                    } else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if(stack.Count > 0) {
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region Submitted
 
         public static void RunMinCostClimbingStairs()
         {
@@ -39,13 +98,9 @@ namespace LeetCode75
             var cost1 = solver1.Solve(cost, 0);
             var cost2 = solver1.Solve(cost, 1);
 
-            return Math.Min(cost1,cost2);
+            return Math.Min(cost1, cost2);
         }
 
-        #endregion
-
-
-        #region Submitted
 
         /////////////////////////////////////////////////////////////////////
         public static int RunClimbStairs_DP(int n)
