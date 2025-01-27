@@ -16,7 +16,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunClimbStairs();
+            RunClimbStairs_DP(5);
 
 
 
@@ -26,11 +26,28 @@ namespace LeetCode75
         #region InProgress
 
 
-
         #endregion
 
 
         #region Submitted
+
+        /////////////////////////////////////////////////////////////////////
+        public static int RunClimbStairs_DP(int n)
+        {
+            // Dynamic programming
+            int ways = 1;
+            int waysPrev = 1;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                var temp = waysPrev;
+                waysPrev = ways;
+                ways = ways + temp;
+            }
+
+            return ways;
+
+        }
 
 
         /////////////////////////////////////////////////////////////////////
