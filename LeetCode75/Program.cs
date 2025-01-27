@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -16,7 +17,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunParenthesesIsValid();
+            RunBinarySearch();
 
 
 
@@ -25,12 +26,38 @@ namespace LeetCode75
 
         #region InProgress
 
+        public static void RunBinarySearch()
+        {
+            var input = new int[] { -1, 0, 3, 5, 9, 12 };
+
+            Console.WriteLine( BinarySearch(input, 13));
+
+        }
+        public static int BinarySearch(int[] nums, int target)
+        {
+            var binarySearch = new BinarySearch();
+
+            return binarySearch.Search(nums, target);
+        }
+
+
+
+
+        #endregion
+
+
+        #region Submitted
+
+
+
+        /////////////////////////////////////////////////////////////////////
         public static void RunParenthesesIsValid()
         {
             string input = "((";
             Console.Write(ParenthesesIsValid(input));
 
         }
+
         public static bool ParenthesesIsValid(string s)
         {
             Dictionary<char, char> charDict = new Dictionary<char, char> {
@@ -42,7 +69,7 @@ namespace LeetCode75
             {
                 return true;
             }
-            if(s.Length % 2 != 0)
+            if (s.Length % 2 != 0)
             {
                 return false;
             }
@@ -63,26 +90,22 @@ namespace LeetCode75
                     if (stack.Count > 0 && stack.Peek() == temp)
                     {
                         stack.Pop();
-
-                    } else
+                    }
+                    else
                     {
                         return false;
                     }
                 }
             }
 
-            if(stack.Count > 0) {
+            if (stack.Count > 0)
+            {
                 return false;
             }
 
             return true;
 
         }
-
-        #endregion
-
-
-        #region Submitted
 
         public static void RunMinCostClimbingStairs()
         {
@@ -103,6 +126,7 @@ namespace LeetCode75
 
 
         /////////////////////////////////////////////////////////////////////
+
         public static int RunClimbStairs_DP(int n)
         {
             // Dynamic programming
@@ -865,6 +889,45 @@ namespace LeetCode75
 
 
 #region Utils
+
+public class BinarySearch
+{
+
+    private int[] nums;
+
+    public BinarySearch() { }
+
+    public int Search(int[] nums, int target)
+    {
+        this.nums = nums;
+        int len = nums.Length;
+
+        var result1 = SearchPartition(0, len - 1, target);
+
+        return result1;
+    }
+
+    public int SearchPartition(int lowerBound, int upperBound, int target)
+    {
+
+        int mid = lowerBound + (upperBound - lowerBound) / 2;
+
+        if (lowerBound > upperBound)
+        { return -1; }
+
+        if(nums[mid] == target)
+        { return mid; }
+
+        if (target > nums[mid])
+        {
+            // Search right partition
+            return SearchPartition(mid + 1 , upperBound, target);
+        } else
+        {
+            return SearchPartition(lowerBound, mid - 1, target);
+        }
+    }
+}
 
 
 public class SolutionCostClimbingStairs
