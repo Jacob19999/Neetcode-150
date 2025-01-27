@@ -16,7 +16,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunClimbStairs_DP(5);
+            RunMinCostClimbingStairs();
 
 
 
@@ -25,6 +25,22 @@ namespace LeetCode75
 
         #region InProgress
 
+        public static void RunMinCostClimbingStairs()
+        {
+            var input = new int[] { 1, 2, 3 };
+
+            Console.WriteLine(MinCostClimbingStairs(input));
+
+        }
+        public static int MinCostClimbingStairs(int[] cost)
+        {
+
+            var solver1 = new SolutionCostClimbingStairs();
+            var cost1 = solver1.Solve(cost, 0);
+            var cost2 = solver1.Solve(cost, 1);
+
+            return Math.Min(cost1,cost2);
+        }
 
         #endregion
 
@@ -794,6 +810,54 @@ namespace LeetCode75
 
 
 #region Utils
+
+
+public class SolutionCostClimbingStairs
+{
+    public SolutionCostClimbingStairs() { }
+
+    private Dictionary<int, int> memoDict = new Dictionary<int, int>();
+
+    public int Solve(int[] costs, int initalStep)
+    {
+        int n = costs.Length - initalStep;
+
+        var result = RecursiveSolve(initalStep, 0,costs);
+
+        return result;
+    }
+
+    public int RecursiveSolve(int currStep, int currCost ,int[] costs)
+    {
+
+        var memoCost = -1;
+        var oneStepCost = -1;
+        var twoStepCost = -1;
+
+        if(currStep >= costs.Length)
+        {
+            return 0;
+        }
+
+        bool isSearched = memoDict.TryGetValue(currStep, out memoCost);
+        
+        if (isSearched)
+        {
+            currCost = memoDict[currStep];
+            return currCost;
+        }
+
+        oneStepCost = RecursiveSolve(currStep + 1, currCost, costs);
+        twoStepCost = RecursiveSolve(currStep + 2, currCost, costs);
+
+        currCost = costs[currStep] + Math.Min(oneStepCost, twoStepCost);
+
+        memoDict[currStep] = currCost;
+        return currCost;
+    }
+
+}
+
 
 // Used for the stairs climbing problem
 public class SolutionStepCounterMemo
