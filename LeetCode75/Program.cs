@@ -17,7 +17,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunBinarySearch();
+            RunRemoveNthFromEnd();
 
 
 
@@ -26,19 +26,6 @@ namespace LeetCode75
 
         #region InProgress
 
-        public static void RunBinarySearch()
-        {
-            var input = new int[] { -1, 0, 3, 5, 9, 12 };
-
-            Console.WriteLine( BinarySearch(input, 13));
-
-        }
-        public static int BinarySearch(int[] nums, int target)
-        {
-            var binarySearch = new BinarySearch();
-
-            return binarySearch.Search(nums, target);
-        }
 
 
 
@@ -48,6 +35,68 @@ namespace LeetCode75
 
         #region Submitted
 
+
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunRemoveNthFromEnd()
+        {
+            var list = new List<int>() { 1, 2, 3, 4 };
+
+            var nodes = new ListNode();
+            nodes.val = 1;
+
+            nodes.next = new ListNode() { val = 2 };
+            nodes.next.next = new ListNode() { val = 3 };
+            nodes.next.next.next = new ListNode() { val = 4 };
+
+            Console.WriteLine(nodes.next.next.val);
+            Console.WriteLine(nodes.next.next.next.val);
+
+            Console.WriteLine(RemoveNthFromEnd(nodes, 2));
+
+        }
+
+        public static ListNode RemoveNthFromEnd(ListNode head, int n)
+        {
+            var values = head.NodesToList();
+
+            return GetNextNode(head, ref n);
+        }
+
+
+        public static ListNode GetNextNode(ListNode currNode, ref int len)
+        {
+            if (currNode == null)
+            {
+                return null;
+            }
+
+            currNode.next = GetNextNode(currNode.next, ref len);
+
+            len--;
+
+            if (len == 0)
+            {
+                return currNode.next;
+            }
+
+            return currNode;
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunBinarySearch()
+        {
+            var input = new int[] { -1, 0, 3, 5, 9, 12 };
+
+            Console.WriteLine(BinarySearch(input, 13));
+
+        }
+        public static int BinarySearch(int[] nums, int target)
+        {
+            var binarySearch = new BinarySearch();
+
+            return binarySearch.Search(nums, target);
+        }
 
 
         /////////////////////////////////////////////////////////////////////
@@ -889,6 +938,40 @@ namespace LeetCode75
 
 
 #region Utils
+public class ListNode {
+
+    public int val;
+    public ListNode next;
+    private List<int> nodeList = new List<int>();
+
+    public ListNode(int val=0, ListNode next=null) {
+
+        this.val = val;
+        this.next = next;
+    }
+      
+    public List<int> NodesToList()
+    {
+
+        GetNextNode(this);
+
+        return nodeList;
+    }
+
+
+    private ListNode GetNextNode(ListNode currNode)
+    {
+        nodeList.Add(currNode.val);
+
+        if (currNode.next != null)
+        {
+            return GetNextNode(currNode.next);
+        }
+
+        return null;
+    }
+}
+ 
 
 public class BinarySearch
 {
