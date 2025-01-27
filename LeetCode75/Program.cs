@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -15,7 +16,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunKthLargest();
+            RunLastStoneWeight();
 
 
 
@@ -25,10 +26,56 @@ namespace LeetCode75
         #region InProgress
 
 
+
+
         #endregion
 
 
         #region Submitted
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunLastStoneWeight()
+        {
+            var maxHeap = new JacobsHeapMax();
+            var nums = new List<int>() { 2, 3, 6, 2, 4 };
+
+            foreach (var num in nums)
+            {
+                maxHeap.InsertNode(num);
+            }
+
+
+            while (nums.Count > 1)
+            {
+
+                var stoneX = maxHeap.RemoveLargest();
+                var stoneY = maxHeap.RemoveLargest();
+
+                // Should Implement peak here.
+                // Do nothing, both removed
+                if (stoneX == stoneY)
+                {
+                    break;
+                };
+
+                // If x < y , add new stone, y - x
+                if (stoneX < stoneY)
+                {
+                    // Stone y  remains
+                    maxHeap.InsertNode(stoneY - stoneX);
+                }
+                else
+                {
+                    // Stone X remains
+                    maxHeap.InsertNode(stoneX - stoneY);
+                }
+
+                nums = maxHeap.GetHeapList();
+            }
+            maxHeap.DisplayHeap();
+        }
+
+
         /////////////////////////////////////////////////////////////////////
         // Different from question, this is a custom heap implementation.
 
@@ -707,6 +754,164 @@ namespace LeetCode75
 
 
 #region Utils
+public class JacobsHeapMax
+{
+
+    List<int> heapList = new List<int>();
+
+    public JacobsHeapMax() {}
+
+    public int GetParentPos(int currPos)
+    {
+        // Denote -1 as no parent node
+        int pos = (currPos - 1) / 2;
+
+        if(pos < 0)
+        {
+            return -1;
+        }
+        return pos;
+    }
+
+    public int GetLeftChildPos(int currPos)
+    {
+
+        return (2 * currPos) + 1;
+    }
+
+    public int GetRightChildPos(int currPos)
+    {
+        return (2 * currPos) + 2;
+    }
+
+    public int GetLargest()
+    {
+
+        return heapList[0];
+    }
+
+    public int InsertNode(int currVal)
+    {
+        heapList.Add(currVal);
+        int currNodePos = heapList.Count - 1;
+
+        // If the parent node is smaller, then swap
+
+        for (int i = 0; i < currNodePos + 1; i++)
+        {
+            int parentPos = GetParentPos(currNodePos);
+
+            if(parentPos == -1)
+            {
+                return currNodePos;
+            }
+
+            int parentVal = heapList[parentPos];
+
+            if (parentVal < currVal)
+            {
+                heapList[currNodePos] = parentVal;
+                heapList[parentPos] = currVal;
+
+                currNodePos = parentPos;
+            }
+        }
+        return currNodePos;
+    }
+
+    public int RemoveLargest()
+    {
+        // Remove top node then recursive heapify.
+        var largestVal = heapList[0];
+
+        heapList.RemoveAt(0);
+
+        SwapMinOfBothChild(0);
+
+        return largestVal;
+    }
+
+    public List<int> GetHeapList()
+    {
+        return heapList;
+    }
+
+    public void SwapMinOfBothChild(int parentPos)
+    {
+
+        int leftChildPos = GetLeftChildPos(parentPos);
+        int rightChildPos = GetRightChildPos(parentPos);
+
+        int lenHeap = heapList.Count - 1;
+
+        if(leftChildPos > lenHeap)
+        {
+            leftChildPos = -1;
+        }
+        if (rightChildPos > lenHeap)
+        {
+            rightChildPos = -1;
+        }
+
+        // If leftchild is missing... Dont swap
+        if(leftChildPos == -1)
+        {
+            return;
+        }
+
+        // If right is missing , then check left exists then swap if child is smaller
+        if(rightChildPos == -1 && leftChildPos > 0)
+        {
+            var leftChildVal = heapList[leftChildPos];
+            var parentVal = heapList[parentPos];
+            if(parentVal < leftChildVal)
+            {
+                heapList[parentPos] = leftChildVal;
+                heapList[leftChildPos] = parentVal;
+                parentPos = leftChildPos;
+            } else { return; }
+
+        } else if (leftChildPos != -1 && rightChildPos != -1)
+        {
+            // If both left and right nodes are present, then choose largest and swap
+            var leftChildVal = heapList[leftChildPos];
+            var rightChildVal = heapList[rightChildPos];
+            var parentVal = heapList[parentPos];
+
+            if((parentVal < rightChildVal) && (rightChildVal > leftChildVal))
+            {
+                heapList[parentPos] = rightChildVal;
+                heapList[rightChildPos] = parentVal;
+                parentPos = rightChildPos;
+
+            } else if ((parentVal < leftChildVal) && (leftChildVal > rightChildVal))
+            {
+                heapList[parentPos] = leftChildVal;
+                heapList[leftChildPos] = parentVal;
+                parentPos = leftChildPos;
+            } else
+            {
+                return;
+            }
+        }
+        // Recursive Bubble down.
+        if(parentPos != -1 || parentPos == 0)
+        {
+            SwapMinOfBothChild(parentPos);
+        }
+    }
+
+    public void DisplayHeap()
+    {
+        Console.WriteLine("------------");
+        foreach (var num in heapList)
+        {
+            Console.WriteLine(num);
+        }
+
+        Console.WriteLine("------------");
+    }
+}
 
 public class JacobsHeapMin
 {
