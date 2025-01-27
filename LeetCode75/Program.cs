@@ -16,7 +16,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunLastStoneWeight();
+            RunClimbStairs();
 
 
 
@@ -27,11 +27,34 @@ namespace LeetCode75
 
 
 
-
         #endregion
 
 
         #region Submitted
+
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunClimbStairs()
+        {
+            Console.WriteLine("Possible Ways = " + ClimbStairs(10));
+        }
+        public static int ClimbStairs(int n)
+        {
+
+            if (n == 1)
+            {
+                return 1;
+            }
+            if (n == 0)
+            {
+                return 0;
+            }
+
+            var solutionMemo = new SolutionStepCounterMemo(n);
+            solutionMemo.Solve();
+
+            return solutionMemo.Solve();
+        }
 
         /////////////////////////////////////////////////////////////////////
         public static void RunLastStoneWeight()
@@ -754,6 +777,58 @@ namespace LeetCode75
 
 
 #region Utils
+
+// Used for the stairs climbing problem
+public class SolutionStepCounterMemo
+{
+    private Dictionary<int, int> memo = new Dictionary<int, int>();
+    int n = 0;
+    public SolutionStepCounterMemo(int n)
+    {
+        this.n = n;
+    }
+
+    public int Solve()
+    {
+        return ClimbRecursive(0, 0, this.n);
+    }
+
+    public int ClimbRecursive(int currVal, int distinctWays, int target)
+    {
+        if (currVal == target)
+        {
+            distinctWays++;
+            return distinctWays;
+        }
+
+        if (currVal > target)
+        {
+            return distinctWays;
+        }
+        else
+        {
+            int distinctWaysMemo = 0;
+            bool isSearched = memo.TryGetValue(currVal, out distinctWaysMemo);
+
+            if (isSearched)
+            {
+                return distinctWays + distinctWaysMemo;
+            }
+            else
+            {
+                distinctWays = ClimbRecursive(currVal + 1, distinctWays, target);
+                distinctWays = ClimbRecursive(currVal + 2, distinctWays, target);
+            }
+        }
+
+        // Remember the solution !
+        memo[currVal] = distinctWays;
+        return distinctWays;
+    }
+}
+
+
+
 public class JacobsHeapMax
 {
 
