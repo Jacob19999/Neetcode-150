@@ -17,7 +17,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunReverseLinkedList();
+            RunMergeTwoLists();
 
 
 
@@ -26,6 +26,90 @@ namespace LeetCode75
 
         #region InProgress
 
+
+
+
+
+
+        #endregion
+
+
+        #region Submitted
+
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunMergeTwoLists()
+        {
+            var list1 = new List<int>() { 1, 2, 4 };
+            var list2 = new List<int>() { 1, 3, 5 };
+
+            var list1Head = new ListNode();
+            var list2Head = new ListNode();
+
+            list1Head.val = 1;
+            list1Head.next = new ListNode() { val = 2 };
+            list1Head.next.next = new ListNode() { val = 4 };
+
+
+            list2Head.val = 1;
+            list2Head.next = new ListNode() { val = 3 };
+            list2Head.next.next = new ListNode() { val = 5 };
+
+
+            var node = MergeTwoLists(list1Head, list2Head);
+
+        }
+
+        public static ListNode MergeTwoLists(ListNode list1, ListNode list2)
+        {
+
+            if (list1 == null)
+            {
+                return list2;
+            }
+            else if (list2 == null)
+            {
+                return list1;
+            }
+
+            ListNode dummyNode = new ListNode();
+
+            dummyNode.val = -100;
+            dummyNode.next = list1;
+
+            var currNode1 = dummyNode;
+            var currNode2 = list2;
+
+            while (currNode2 != null)
+            {
+                // Fetch the curr Node val for both list 1 and 2
+
+                var nextNode1 = currNode1.next;
+                var nextNode2 = currNode2;
+
+
+                if (nextNode1 == null)
+                {
+                    currNode1.next = nextNode2;
+                    currNode2 = nextNode1;
+
+                }
+                else if (currNode1.val <= nextNode2.val && nextNode1.val >= nextNode2.val)
+                {
+                    var temp = currNode1.next;
+                    currNode1.next = nextNode2;
+
+                    currNode2 = currNode2.next;
+                    currNode1.next.next = temp;
+                }
+
+                currNode1 = currNode1.next;
+            }
+
+            return dummyNode.next;
+        }
+
+        /////////////////////////////////////////////////////////////////////
         public static void RunReverseLinkedList()
         {
             var list = new List<int>() { 1, 2, 3, 4 };
@@ -40,7 +124,7 @@ namespace LeetCode75
             Console.WriteLine(nodes.next.next.val);
             Console.WriteLine(nodes.next.next.next.val);
 
-            var node =  ReverseList(nodes);
+            var node = ReverseList(nodes);
 
         }
 
@@ -50,7 +134,7 @@ namespace LeetCode75
             int n = 0;
 
             ListNode newHead = null;
-                
+
             RecursiveUnwindList(head, ref n, ref newHead);
 
             return newHead;
@@ -59,7 +143,7 @@ namespace LeetCode75
 
         public static ListNode RecursiveUnwindList(ListNode currNode, ref int n, ref ListNode newHead)
         {
-            if(currNode == null)
+            if (currNode == null)
             {
                 return null;
             }
@@ -72,18 +156,18 @@ namespace LeetCode75
 
             // Reverse the linked list here!
 
-            if(currNode.next == null)
+            if (currNode.next == null)
             {
                 newHead = currNode;
                 return currNode;
             }
 
-            if(currNode != null && prevNode != null)
+            if (currNode != null && prevNode != null)
             {
                 prevNode.next = currNode;
             }
 
-            if(n == 0)
+            if (n == 0)
             {
                 currNode.next = null;
                 return null;
@@ -91,15 +175,6 @@ namespace LeetCode75
 
             return currNode;
         }
-
-
-
-        #endregion
-
-
-        #region Submitted
-
-
 
         /////////////////////////////////////////////////////////////////////
         public static void RunRemoveNthFromEnd()
