@@ -17,7 +17,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunRemoveNthFromEnd();
+            RunReverseLinkedList();
 
 
 
@@ -26,7 +26,71 @@ namespace LeetCode75
 
         #region InProgress
 
+        public static void RunReverseLinkedList()
+        {
+            var list = new List<int>() { 1, 2, 3, 4 };
 
+            var nodes = new ListNode();
+
+            nodes.val = 1;
+            nodes.next = new ListNode() { val = 2 };
+            nodes.next.next = new ListNode() { val = 3 };
+            nodes.next.next.next = new ListNode() { val = 4 };
+
+            Console.WriteLine(nodes.next.next.val);
+            Console.WriteLine(nodes.next.next.next.val);
+
+            var node =  ReverseList(nodes);
+
+        }
+
+        public static ListNode ReverseList(ListNode head)
+        {
+
+            int n = 0;
+
+            ListNode newHead = null;
+                
+            RecursiveUnwindList(head, ref n, ref newHead);
+
+            return newHead;
+
+        }
+
+        public static ListNode RecursiveUnwindList(ListNode currNode, ref int n, ref ListNode newHead)
+        {
+            if(currNode == null)
+            {
+                return null;
+            }
+
+            n++;
+
+            var prevNode = RecursiveUnwindList(currNode.next, ref n, ref newHead);
+
+            n--;
+
+            // Reverse the linked list here!
+
+            if(currNode.next == null)
+            {
+                newHead = currNode;
+                return currNode;
+            }
+
+            if(currNode != null && prevNode != null)
+            {
+                prevNode.next = currNode;
+            }
+
+            if(n == 0)
+            {
+                currNode.next = null;
+                return null;
+            }
+
+            return currNode;
+        }
 
 
 
