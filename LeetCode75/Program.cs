@@ -18,7 +18,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunMaxDepth();
+            RunInvertTree();
 
 
             Console.ReadLine();
@@ -26,6 +26,71 @@ namespace LeetCode75
 
         #region InProgress
 
+
+
+
+
+
+
+
+
+        #endregion
+
+
+        #region Submitted
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunInvertTree()
+        {
+
+            var rootNode = new TreeNode();
+            rootNode.val = 1;
+
+            var node2 = new TreeNode();
+            node2.val = 2;
+
+            var node3 = new TreeNode();
+            node3.val = 3;
+
+            var node4 = new TreeNode();
+            node4.val = 4;
+
+            var node5 = new TreeNode();
+            node5.val = 5;
+
+            var node6 = new TreeNode();
+            node6.val = 6;
+
+            var node7 = new TreeNode();
+            node7.val = 7;
+
+            rootNode.left = node2;
+            rootNode.right = node3;
+
+            node2.left = node4;
+            node2.right = node5;
+
+            node3.left = node6;
+            node3.right = node7;
+
+            var nodeResult = InvertTree(rootNode);
+        }
+
+
+        public static TreeNode InvertTree(TreeNode root)
+        {
+
+            if (root == null) return null;
+
+            var tempNode = new TreeNode(root.val);
+
+            tempNode.right = InvertTree(root.left);
+            tempNode.left = InvertTree(root.right);
+
+            return tempNode;
+
+        }
+        /////////////////////////////////////////////////////////////////////
         public static void RunMaxDepth()
         {
 
@@ -99,21 +164,6 @@ namespace LeetCode75
             return level;
 
         }
-
-
-
-
-
-
-
-
-        #endregion
-
-
-        #region Submitted
-
-
-
 
         /////////////////////////////////////////////////////////////////////
         public static void RunMergeTwoLists()
