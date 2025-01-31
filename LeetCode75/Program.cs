@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Permissions;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunInvertTree();
+            RunKthSmallest();
 
 
             Console.ReadLine();
@@ -34,10 +35,356 @@ namespace LeetCode75
 
 
 
+
         #endregion
 
 
         #region Submitted
+        /////////////////////////////////////////////////////////////////////
+        public static void RunKthSmallest()
+        {
+            var root = new TreeNode(4);
+            root.left = new TreeNode(3);
+            root.right = new TreeNode(5);
+            root.left.left = new TreeNode(2);
+
+            Console.WriteLine(KthSmallest(root, 4));
+
+        }
+
+
+        public static int KthSmallest(TreeNode root, int k)
+        {
+
+            var arr = new List<int>();
+
+            var res = RecurseKSmallest(root, ref arr, k);
+
+            int valRes = arr[k - 1];
+
+            return valRes;
+        }
+
+        public static TreeNode RecurseKSmallest(TreeNode curNode, ref List<int> arr, int k)
+        {
+
+            if (curNode == null) return null;
+
+            RecurseKSmallest(curNode.left, ref arr, k);
+
+            arr.Add(curNode.val);
+
+            RecurseKSmallest(curNode.right, ref arr, k);
+
+            return curNode;
+
+        }
+        /////////////////////////////////////////////////////////////////////
+        public static void RunGoodNodes()
+        {
+            var root = new TreeNode(3);
+            root.left = new TreeNode(3);
+
+
+            root.left.left = new TreeNode(4);
+            root.left.right = new TreeNode(2);
+
+            Console.WriteLine(GoodNodes(root));
+
+
+        }
+
+        public static int GoodNodes(TreeNode root)
+        {
+            int n = 0;
+
+            if (root == null)
+            {
+                return 0;
+            }
+
+            RecursiveGoodNodes(root, -101, ref n);
+
+            return n + 1;
+        }
+
+        public static void RecursiveGoodNodes(TreeNode curNode, int maxVal, ref int n)
+        {
+
+            if (curNode == null) return;
+
+            if (curNode.val >= maxVal)
+            {
+                n++;
+            }
+
+            maxVal = Math.Max(maxVal, curNode.val);
+
+            RecursiveGoodNodes(curNode.left, maxVal, ref n);
+            RecursiveGoodNodes(curNode.right, maxVal, ref n);
+
+            return;
+
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunRightSideVisible()
+        {
+            TreeNode root = new TreeNode(1);
+            root.left = new TreeNode(2);
+            root.right = new TreeNode(3);
+
+            root.left.left = null;
+            root.left.right = new TreeNode(5);
+
+
+            root.right.left = null;
+            root.right.right = new TreeNode(4);
+
+            Console.WriteLine(RightSideView(root));
+
+
+        }
+        public static List<int> RightSideView(TreeNode root)
+        {
+            if (root == null)
+            {
+                return new List<int>();
+            }
+
+            return BFSSearch(root);
+        }
+
+        public static List<int> BFSSearch(TreeNode rootNode)
+        {
+            var bfsQueue = new Queue<TreeNode>();
+            var resList = new List<int>();
+
+            int level = 0;
+            bfsQueue.Enqueue(rootNode);
+
+
+            while (bfsQueue.Count > 0)
+            {
+
+                int len = bfsQueue.Count;
+                for (int i = 0; i < len; i++)
+                {
+                    var curNode = bfsQueue.Dequeue();
+
+                    if (curNode.left != null)
+                    {
+                        bfsQueue.Enqueue(curNode.left);
+                    }
+                    if (curNode.right != null)
+                    {
+                        bfsQueue.Enqueue(curNode.right);
+                    }
+
+                    if (i == len - 1)
+                    {
+                        resList.Add(curNode.val);
+                    }
+                }
+
+                level++;
+            }
+
+
+            return resList;
+        }
+
+        /////////////////////////////////////////////////////////////////////
+ 
+        public static void RunLowestCommonAncestor()
+        {
+            var rootNode = new TreeNode();
+            rootNode.val = 5;
+            var node1 = new TreeNode();
+            node1.val = 1;
+            var node2 = new TreeNode();
+            node2.val = 2;
+            var node3 = new TreeNode();
+            node3.val = 3;
+            var node4 = new TreeNode();
+            node4.val = 4;
+            var node5 = new TreeNode();
+            node5.val = 5;
+            var node6 = new TreeNode();
+            node6.val = 6;
+            var node7 = new TreeNode();
+            node7.val = 7;
+            var node8 = new TreeNode();
+            node8.val = 8;
+            var node9 = new TreeNode();
+            node9.val = 9;
+            rootNode.left = node3;
+            rootNode.right = node8;
+            node3.left = node1;
+            node3.right = node4;
+            node1.right = node2;
+            node8.left = node7;
+            node8.right = node9;
+            var res = LowestCommonAncestor(rootNode, node1, node9);
+
+            Console.WriteLine(res.val);
+
+        }
+
+        public static TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+        {
+
+            var res = RecursionLCA(root, p, q);
+
+            return res;
+        }
+
+        public static TreeNode RecursionLCA(TreeNode curNode, TreeNode p, TreeNode q)
+        {
+            if (curNode == null || p == null || q == null)
+            {
+                return null;
+            }
+
+            if (Math.Max(p.val, q.val) < curNode.val)
+            {
+                RecursionLCA(curNode.left, p, q);
+
+            }
+            else if (Math.Min(p.val, q.val) > curNode.val)
+            {
+                RecursionLCA(curNode.right, p, q);
+
+            }
+            else
+            {
+                return curNode;
+            }
+
+            return null;
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        public int LeetMaxDepth(TreeNode root)
+        {
+            if (root == null) return 0;
+
+            var res = Math.Max(LeetMaxDepth(root.left), LeetMaxDepth(root.right)) + 1;
+
+            return res;
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        public static void RunIsBalancedTree()
+        {
+            var rootNode = new TreeNode();
+            rootNode.val = 1;
+            var node2 = new TreeNode();
+            node2.val = 2;
+            var node3 = new TreeNode();
+            node3.val = 3;
+            var node4 = new TreeNode();
+            node4.val = 4;
+            var node5 = new TreeNode();
+            node5.val = 5;
+
+
+            rootNode.left = node2;
+            rootNode.right = node3;
+
+            node3.left = node4;
+            node4.left = node5;
+
+            Console.Write(IsBalanced(rootNode));
+
+        }
+
+        public static bool IsBalanced(TreeNode root)
+        {
+            if (root == null) { return true; }
+
+
+            var res = DfsRecurse(root, 0);
+
+            if (res != -1)
+            {
+                return true;
+            }
+
+            return false ;
+        }
+
+
+        public static int DfsRecurse(TreeNode curNode, int d)
+        {
+            if (curNode == null) return 0;
+
+            int heightL = DfsRecurse(curNode.left, 0);
+            int heightR = DfsRecurse(curNode.right, 0);
+
+            if (heightL == -1)
+            {
+                return -1;
+            }
+            if (heightR == -1)
+            {
+                return -1;
+            }
+
+            if(Math.Abs(heightL - heightR) > 1)
+            {
+                return -1;
+            }
+
+            return Math.Max(heightL, heightR) + 1;
+
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        public static void RunDiameterOfBinaryTree()
+        {
+            var rootNode = new TreeNode();
+            rootNode.val = 1;
+            var node2 = new TreeNode();
+            node2.val = 2;
+            var node3 = new TreeNode();
+            node3.val = 3;
+            var node4 = new TreeNode();
+            node4.val = 4;
+            var node5 = new TreeNode();
+            node5.val = 5;
+
+            rootNode.right = node2;
+            node2.left = node3;
+            node2.right = node4;
+            node3.left = node5;
+
+            Console.WriteLine(DiameterOfBinaryTree(rootNode));
+
+        }
+
+        public static int DiameterOfBinaryTree(TreeNode root)
+        {
+            int n = 0;
+
+            DfsDiameterRecur(root, ref n);
+
+            return n;
+        }
+
+        public static int DfsDiameterRecur(TreeNode curNode, ref int n)
+        {
+            if (curNode == null) return 0;
+
+            int NodeLeft = DfsDiameterRecur(curNode.left, ref n);
+            int NodeRight = DfsDiameterRecur(curNode.right, ref n);
+
+            n = Math.Max(n, NodeLeft + NodeRight);
+
+            return Math.Max(NodeLeft, NodeRight) + 1;
+        }
+
 
         /////////////////////////////////////////////////////////////////////
         public static void RunInvertTree()
@@ -45,34 +392,25 @@ namespace LeetCode75
 
             var rootNode = new TreeNode();
             rootNode.val = 1;
-
             var node2 = new TreeNode();
             node2.val = 2;
-
             var node3 = new TreeNode();
             node3.val = 3;
-
             var node4 = new TreeNode();
             node4.val = 4;
-
             var node5 = new TreeNode();
             node5.val = 5;
-
             var node6 = new TreeNode();
             node6.val = 6;
-
             var node7 = new TreeNode();
             node7.val = 7;
 
             rootNode.left = node2;
             rootNode.right = node3;
-
             node2.left = node4;
             node2.right = node5;
-
             node3.left = node6;
             node3.right = node7;
-
             var nodeResult = InvertTree(rootNode);
         }
 
@@ -96,19 +434,14 @@ namespace LeetCode75
 
             var rootNode = new TreeNode();
             rootNode.val = 1;
-
             var node2 = new TreeNode();
             node2.val = 2;
-
             var node3 = new TreeNode();
             node3.val = 3;
-
             var node4 = new TreeNode();
             node4.val = 4;
-
             rootNode.left = node2;
             rootNode.right = node3;
-
             node3.left = node4;
 
             Console.WriteLine(DFSMaxDepth(rootNode));
