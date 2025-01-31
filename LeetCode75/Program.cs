@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,14 +18,89 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunMergeTwoLists();
-
+            RunMaxDepth();
 
 
             Console.ReadLine();
         }
 
         #region InProgress
+
+        public static void RunMaxDepth()
+        {
+
+            var rootNode = new TreeNode();
+            rootNode.val = 1;
+
+            var node2 = new TreeNode();
+            node2.val = 2;
+
+            var node3 = new TreeNode();
+            node3.val = 3;
+
+            var node4 = new TreeNode();
+            node4.val = 4;
+
+            rootNode.left = node2;
+            rootNode.right = node3;
+
+            node3.left = node4;
+
+            Console.WriteLine(DFSMaxDepth(rootNode));
+            Console.WriteLine(BFSMaxDepth(rootNode));
+        }
+
+
+
+        public static int DFSMaxDepth(TreeNode root)
+        {
+            // Perform DFS
+
+            if (root == null) return 0;
+
+            var depth = Math.Max(DFSMaxDepth(root.left), DFSMaxDepth(root.right));
+
+            return depth + 1;
+
+        }
+
+        public static int BFSMaxDepth(TreeNode root)
+        {
+
+            Queue<TreeNode> queue = new Queue<TreeNode>();
+
+            if (root != null)
+            {
+                queue.Enqueue(root);
+            }
+            int level = 0;
+
+            while (queue.Count > 0)
+            {
+                int len = queue.Count;
+                for (int i = 0; i < len; i++)
+                {
+                    var node = queue.Dequeue();
+
+                    if (node.left != null)
+                    {
+                        queue.Enqueue(node.left);
+                    }
+
+                    if (node.right != null)
+                    {
+                        queue.Enqueue(node.right);
+                    }
+                }
+
+                level++;
+            }
+
+            return level;
+
+        }
+
+
 
 
 
@@ -35,6 +111,8 @@ namespace LeetCode75
 
 
         #region Submitted
+
+
 
 
         /////////////////////////////////////////////////////////////////////
@@ -1077,6 +1155,22 @@ namespace LeetCode75
 
 
 #region Utils
+
+public class TreeNode
+{   
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+    {
+       this.val = val;
+       this.left = left;
+       this.right = right;
+    }
+
+}
+
+
 public class ListNode {
 
     public int val;
