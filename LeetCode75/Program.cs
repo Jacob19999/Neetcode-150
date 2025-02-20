@@ -19,7 +19,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunKthSmallest();
+            RunLevelOrderTraversal();
 
 
             Console.ReadLine();
@@ -35,11 +35,81 @@ namespace LeetCode75
 
 
 
-
         #endregion
 
 
         #region Submitted
+        public static void RunLevelOrderTraversal()
+        {
+            var root = new TreeNode(1);
+            root.left = new TreeNode(2);
+            root.right = new TreeNode(3);
+            root.left.left = new TreeNode(4);
+            root.left.right = new TreeNode(5);
+            root.right.left = new TreeNode(6);
+            root.right.right = new TreeNode(7);
+
+
+            var res = LevelOrder(root);
+        }
+
+        public static List<List<int>> LevelOrder(TreeNode root)
+        {
+
+            if (root == null)
+            {
+                return new List<List<int>>();
+            }
+
+            return RecursiveLevelOrderTraversal(root, new List<List<int>>(), 0);
+        }
+
+        public static List<List<int>> RecursiveLevelOrderTraversal(TreeNode node, List<List<int>> res, int level)
+        {
+            if (node == null)
+            {
+                return null;
+            }
+
+            if (res.Count <= level)
+            {
+                res.Add(new List<int>());
+            }
+
+            res[level].Add(node.val);
+
+            RecursiveLevelOrderTraversal(node.left, res, level + 1);
+            RecursiveLevelOrderTraversal(node.right, res, level + 1);
+
+            return res;
+        }
+
+        public static void RunBuildTree()
+        {
+            var preOrder = new int[] { 1, 2, 3, 4 };
+            var inOrder = new int[] { 2, 1, 3, 4 };
+
+            Console.WriteLine(BuildTree(preOrder, inOrder));
+        }
+
+        public static TreeNode BuildTree(int[] preorder, int[] inorder)
+        {
+            // Get root position
+            int rootPos = 0;
+            for (int i = 0; i < inorder.Length; i++)
+            {
+                if (inorder[i] == preorder[0])
+                {
+                    rootPos = i;
+                }
+            }
+
+            var root = new TreeNode(inorder[rootPos]);
+
+
+            return new TreeNode();
+        }
+
         /////////////////////////////////////////////////////////////////////
         public static void RunKthSmallest()
         {
