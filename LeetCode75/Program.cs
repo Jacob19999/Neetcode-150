@@ -19,7 +19,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunLevelOrderTraversal();
+            IsValidBST();
 
 
             Console.ReadLine();
@@ -31,12 +31,60 @@ namespace LeetCode75
 
 
 
-
-
-
-
         #endregion
+        public static void IsValidBST()
+        {
+            var root = new TreeNode(5);
+            root.left = new TreeNode(4);
+            root.right = new TreeNode(6);
 
+            root.right.left = new TreeNode(3);
+            root.right.right = new TreeNode(7);
+
+            var res = IsValidBST(root);
+        }
+
+
+        public static bool IsValidBST(TreeNode root)
+        {
+            var res = QueueTraversal(root);
+            return res;
+        }
+
+        public static bool QueueTraversal(TreeNode root)
+        {
+            var queue = new Queue<(TreeNode node, int min, int max)>();
+            queue.Enqueue((root, int.MinValue, int.MaxValue));
+
+            while (queue.Count > 0)
+            {
+
+                int len = queue.Count;
+
+                for (int i = 0; i < len; i++)
+                {
+                    var currNode = queue.Dequeue();
+
+                    if (currNode.node.val <= currNode.min || currNode.node.val >= currNode.max)
+                    {
+                        return false;
+                    }
+
+                    if (currNode.node.left != null)
+                    {
+
+                        queue.Enqueue((currNode.node.left, currNode.min, currNode.node.val));
+                        Console.WriteLine($"Left: {currNode.node.left.val} Min : {currNode.min} max: {currNode.node.val}");
+                    }
+                    if (currNode.node.right != null)
+                    {
+                        queue.Enqueue((currNode.node.right, currNode.node.val, currNode.max));
+                        Console.WriteLine($"Right: {currNode.node.right.val}  Min : {currNode.node.val} max: {currNode.max}");
+                    }
+                }
+            }
+            return true;
+        }
 
         #region Submitted
         public static void RunLevelOrderTraversal()
