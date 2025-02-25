@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -19,7 +20,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            IsValidBST();
+            RunMaxProfit();
 
 
             Console.ReadLine();
@@ -32,6 +33,41 @@ namespace LeetCode75
 
 
         #endregion
+
+        public static void RunMaxProfit()
+        {
+
+            var input = new int[] { 2, 1, 4 };
+
+            Console.WriteLine(MaxProfit(input));
+
+        }
+        public static int MaxProfit(int[] prices)
+        {
+            if (prices == null || prices.Length < 2)
+            {
+                return 0;
+            }
+
+            int maxProfit = 0;
+            int min = prices[0];
+
+            for (int i = 1; i < prices.Length; i++)
+            {
+                if (prices[i] < min)
+                {
+                    min = prices[i];
+                }
+                else
+                {
+                    int curProfit = prices[i] - min;
+                    maxProfit = Math.Max(maxProfit, curProfit);
+                }
+            }
+
+            return maxProfit;
+        }
+
         public static void IsValidBST()
         {
             var root = new TreeNode(5);
