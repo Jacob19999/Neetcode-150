@@ -11,7 +11,7 @@ namespace NeetCode150
     {
         static void Main(string[] args)
         {
-            RunEvalRPN();
+            RunGenerateParenthesis();
 
 
             Console.ReadLine();
@@ -25,19 +25,46 @@ namespace NeetCode150
 
         }
 
-        public static List<string> GenerateParenthesis(int n)
-        {
 
-
-
-            return new List<string>();
-        }
 
 
 
 
 
         #endregion
+
+        public static List<string> GenerateParenthesis(int n)
+        {
+            var res = new List<string>();
+
+            DecisionTreeParenthesis("(", 1, 0, n, res);
+
+            return res;
+        }
+
+
+        public static void DecisionTreeParenthesis(string s, int open, int close, int n, List<string> res)
+        {
+            if (open < close)
+            {
+                return;
+            }
+
+            if ((open + close) > n * 2)
+            {
+                return;
+            }
+
+            if (open == close && open == n)
+            {
+                res.Add(s);
+            }
+
+            DecisionTreeParenthesis(s + "(", open + 1, close, n, res);
+            DecisionTreeParenthesis(s + ")", open, close + 1, n, res);
+
+            return;
+        }
 
         public static void RunEvalRPN()
         {
