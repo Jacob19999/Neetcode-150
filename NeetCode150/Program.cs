@@ -11,7 +11,7 @@ namespace NeetCode150
     {
         static void Main(string[] args)
         {
-            RunMinStack();
+            RunEvalRPN();
 
 
             Console.ReadLine();
@@ -19,14 +19,73 @@ namespace NeetCode150
 
         #region InProgress
 
+        public static void RunGenerateParenthesis()
+        {
+            var res = GenerateParenthesis(3);
+
+        }
+
+        public static List<string> GenerateParenthesis(int n)
+        {
 
 
+
+            return new List<string>();
+        }
 
 
 
 
 
         #endregion
+
+        public static void RunEvalRPN()
+        {
+            var input = new string[] { "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+" };
+
+            var result = EvalRPN(input);
+
+        }
+
+        public static int EvalRPN(string[] tokens)
+        {
+            var myStack = new Stack<int>();
+
+            foreach (var s in tokens)
+            {
+                int val = 0;
+
+                if (Int32.TryParse(s, out val))
+                {
+                    myStack.Push(val);
+                }
+                else
+                {
+                    var res = 0;
+                    var secRes = myStack.Pop();
+                    var firstRes = myStack.Pop();
+
+                    if (s == "+")
+                    {
+                        res = firstRes + secRes;
+                    }
+                    else if (s == "-")
+                    {
+                        res = firstRes - secRes;
+                    }
+                    else if (s == "/")
+                    {
+                        res = firstRes / secRes;
+                    }
+                    else if (s == "*")
+                    {
+                        res = firstRes * secRes;
+                    }
+                    myStack.Push(res);
+                }
+            }
+            return myStack.Pop();
+        }
 
         public static void RunMinStack()
         {
