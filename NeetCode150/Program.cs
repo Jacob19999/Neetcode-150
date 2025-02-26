@@ -4,17 +4,47 @@ using System.Reflection.PortableExecutable;
 
 namespace NeetCode150
 {
+    
+
+
     public class Program
     {
         static void Main(string[] args)
         {
-            RunMaxSlidingWindow();
+            RunMinStack();
 
 
             Console.ReadLine();
         }
 
         #region InProgress
+
+
+
+
+
+
+
+
+        #endregion
+
+        public static void RunMinStack()
+        {
+            var lst = new List<int> { 6, 1, 7, 2, 0 };
+
+            var myStack = new MinStack();
+
+            myStack.Push(5);
+            myStack.Push(0);
+            myStack.Push(2);
+            myStack.Push(4);
+            myStack.GetMin();
+            myStack.Pop();
+            myStack.GetMin();
+            myStack.Pop();
+            myStack.GetMin();
+
+        }
 
         public static void RunMaxSlidingWindow()
         {
@@ -37,10 +67,10 @@ namespace NeetCode150
 
             while (true)
             {
-                
+
                 for (int i = 0; i < k; i++)
                 {
-                    maxHeap.Enqueue(nums[l+i], -1000 - nums[l+i]);
+                    maxHeap.Enqueue(nums[l + i], -1000 - nums[l + i]);
                 }
 
                 int max = maxHeap.Dequeue();
@@ -49,18 +79,16 @@ namespace NeetCode150
                 maxHeap.Clear();
                 outArr.Add(max);
 
-                if (l  > nums.Length-k)
+                if (l > nums.Length - k)
                 {
                     break;
                 }
             }
-            
+
             return outArr.ToArray();
 
         }
 
-
-        #endregion
 
         public static void RunCharacterReplacement()
         {
@@ -1805,7 +1833,80 @@ namespace NeetCode150
 
 
 #region Utils
+public class MinStack
+{
+    Stack<int> stack = new Stack<int>();
+    Stack<int> minStack = new Stack<int>();
 
+    int currMin = -1;
+
+    public MinStack()
+    {
+
+    }
+
+    public void Push(int val)
+    {
+        stack.Push(val);
+
+        if (minStack.Count > 0)
+        {
+            var valMin = minStack.Peek();
+
+            if (valMin < val)
+            {
+                minStack.Push(valMin);
+            }
+            else
+            {
+                minStack.Push(val);
+            }
+        }
+        else
+        {
+            minStack.Push(val);
+        }
+
+
+    }
+
+    public void Pop()
+    {
+        if (stack.Count > 0)
+        {
+            stack.Pop();
+            minStack.Pop();
+        }
+
+
+    }
+
+    public int Top()
+    {
+        if (stack.Count > 0)
+        {
+            return stack.Peek();
+        }
+        else
+        {
+            return -int.MaxValue;
+        }
+
+    }
+
+    public int GetMin()
+    {
+        if (minStack.Count > 0)
+        {
+            return minStack.Peek();
+        }
+        else
+        {
+            return -int.MaxValue;
+        }
+
+    }
+}
 public class TreeNode
 {
     public int val;
