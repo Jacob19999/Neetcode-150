@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeetCode75
+namespace NeetCode150
 {
     public class Program
     {
