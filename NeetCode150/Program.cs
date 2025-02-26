@@ -1,18 +1,5 @@
 ﻿using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Permissions;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace LeetCode75
 {
@@ -20,7 +7,7 @@ namespace LeetCode75
     {
         static void Main(string[] args)
         {
-            RunMaxProfit();
+            RunCharacterReplacement();
 
 
             Console.ReadLine();
@@ -28,11 +15,118 @@ namespace LeetCode75
 
         #region InProgress
 
+        public static void RunMaxSlidingWindow()
+        {
+            var nums = new int[] { 1, 2, 1, 0, 4, 2, 6 };
 
+            var res = MaxSlidingWindow(nums, 3);
+        }
+
+        public static int[] MaxSlidingWindow(int[] nums, int k)
+        {
+            int l = 0;
+
+            var maxHeap = new PriorityQueue<int, int>();
+
+            for (int r = 0; r < nums.Length; r++)
+            {
+
+
+
+            }
+
+
+            return null;
+
+        }
 
 
 
         #endregion
+
+        public static void RunCharacterReplacement()
+        {
+            string s = "xyyx";
+            int k = 2;
+
+            Console.WriteLine(CharacterReplacement(s, k));
+        }
+
+        public static int CharacterReplacement(string s, int k)
+        {
+            int l = 0;
+            int maxLength = 0;
+            int maxFreq = 0;
+
+            var freqDict = new Dictionary<char, int>();
+
+            for (int r = 0; r < s.Count(); r++)
+            {
+                // Add the current character to the frequency dictionary
+                if (!freqDict.ContainsKey(s[r]))
+                {
+                    freqDict[s[r]] = 0;
+                }
+                freqDict[s[r]]++;
+
+                maxFreq = Math.Max(maxFreq, freqDict[s[r]]);
+
+                // Shrink the window by moving the left pointer
+                while ((r - l + 1) - maxFreq > k)
+                {
+                    freqDict[s[l]]--;
+                    l++;
+                }
+
+                // Update the maximum length of the valid window
+                maxLength = Math.Max(maxLength, r - l + 1);
+            }
+
+            return maxLength;
+        }
+
+        public static void RunLengthOfLongestSubstring()
+        {
+            string inS = "dvdf";
+            Console.WriteLine(LengthOfLongestSubstring(inS));
+        }
+
+
+        public static int LengthOfLongestSubstring(string s)
+        {
+            if (s == "")
+            {
+                return 0;
+            }
+            if (s.Count() < 2)
+            {
+                return 1;
+            }
+            int maxLen = 0;
+            int l = 0;
+
+            Dictionary<char, int> containsDict = new Dictionary<char, int>();
+
+            for (int r = 0; r < s.Count(); r++)
+            {
+                while (true)
+                {
+                    if (containsDict.TryGetValue(s[r], out int val))
+                    {
+                        containsDict.Remove(s[l]);
+                        l++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                containsDict.Add(s[r], 1);
+                maxLen = Math.Max(maxLen, containsDict.Count());
+            }
+
+            return maxLen;
+        }
 
         public static void RunMaxProfit()
         {
@@ -349,7 +443,7 @@ namespace LeetCode75
         }
 
         /////////////////////////////////////////////////////////////////////
- 
+
         public static void RunLowestCommonAncestor()
         {
             var rootNode = new TreeNode();
@@ -465,7 +559,7 @@ namespace LeetCode75
                 return true;
             }
 
-            return false ;
+            return false;
         }
 
 
@@ -485,7 +579,7 @@ namespace LeetCode75
                 return -1;
             }
 
-            if(Math.Abs(heightL - heightR) > 1)
+            if (Math.Abs(heightL - heightR) > 1)
             {
                 return -1;
             }
@@ -994,7 +1088,8 @@ namespace LeetCode75
                 if (stoneX == stoneY)
                 {
                     break;
-                };
+                }
+                ;
 
                 // If x < y , add new stone, y - x
                 if (stoneX < stoneY)
@@ -1611,7 +1706,7 @@ namespace LeetCode75
             string s = "jam";
             string t = "jar";
 
-            var result = IsAnagram(s,t);
+            var result = IsAnagram(s, t);
             Console.WriteLine(result.ToString());
         }
         public static bool IsAnagram(string s, string t)
@@ -1628,7 +1723,7 @@ namespace LeetCode75
 
             foreach (var charValuePair in dicS)
             {
-                var dicTValuePair = dicT.TryGetValue(charValuePair.Key, out int val); 
+                var dicTValuePair = dicT.TryGetValue(charValuePair.Key, out int val);
                 // If the char is not found in first string...
                 if (!dicTValuePair)
                 {
@@ -1694,32 +1789,34 @@ namespace LeetCode75
 #region Utils
 
 public class TreeNode
-{   
+{
     public int val;
     public TreeNode left;
     public TreeNode right;
     public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
     {
-       this.val = val;
-       this.left = left;
-       this.right = right;
+        this.val = val;
+        this.left = left;
+        this.right = right;
     }
 
 }
 
 
-public class ListNode {
+public class ListNode
+{
 
     public int val;
     public ListNode next;
     private List<int> nodeList = new List<int>();
 
-    public ListNode(int val=0, ListNode next=null) {
+    public ListNode(int val = 0, ListNode next = null)
+    {
 
         this.val = val;
         this.next = next;
     }
-      
+
     public List<int> NodesToList()
     {
 
@@ -1741,7 +1838,7 @@ public class ListNode {
         return null;
     }
 }
- 
+
 
 public class BinarySearch
 {
@@ -1768,14 +1865,15 @@ public class BinarySearch
         if (lowerBound > upperBound)
         { return -1; }
 
-        if(nums[mid] == target)
+        if (nums[mid] == target)
         { return mid; }
 
         if (target > nums[mid])
         {
             // Search right partition
-            return SearchPartition(mid + 1 , upperBound, target);
-        } else
+            return SearchPartition(mid + 1, upperBound, target);
+        }
+        else
         {
             return SearchPartition(lowerBound, mid - 1, target);
         }
@@ -1793,25 +1891,25 @@ public class SolutionCostClimbingStairs
     {
         int n = costs.Length - initalStep;
 
-        var result = RecursiveSolve(initalStep, 0,costs);
+        var result = RecursiveSolve(initalStep, 0, costs);
 
         return result;
     }
 
-    public int RecursiveSolve(int currStep, int currCost ,int[] costs)
+    public int RecursiveSolve(int currStep, int currCost, int[] costs)
     {
 
         var memoCost = -1;
         var oneStepCost = -1;
         var twoStepCost = -1;
 
-        if(currStep >= costs.Length)
+        if (currStep >= costs.Length)
         {
             return 0;
         }
 
         bool isSearched = memoDict.TryGetValue(currStep, out memoCost);
-        
+
         if (isSearched)
         {
             currCost = memoDict[currStep];
@@ -1886,14 +1984,14 @@ public class JacobsHeapMax
 
     List<int> heapList = new List<int>();
 
-    public JacobsHeapMax() {}
+    public JacobsHeapMax() { }
 
     public int GetParentPos(int currPos)
     {
         // Denote -1 as no parent node
         int pos = (currPos - 1) / 2;
 
-        if(pos < 0)
+        if (pos < 0)
         {
             return -1;
         }
@@ -1928,7 +2026,7 @@ public class JacobsHeapMax
         {
             int parentPos = GetParentPos(currNodePos);
 
-            if(parentPos == -1)
+            if (parentPos == -1)
             {
                 return currNodePos;
             }
@@ -1971,7 +2069,7 @@ public class JacobsHeapMax
 
         int lenHeap = heapList.Count - 1;
 
-        if(leftChildPos > lenHeap)
+        if (leftChildPos > lenHeap)
         {
             leftChildPos = -1;
         }
@@ -1981,48 +2079,52 @@ public class JacobsHeapMax
         }
 
         // If leftchild is missing... Dont swap
-        if(leftChildPos == -1)
+        if (leftChildPos == -1)
         {
             return;
         }
 
         // If right is missing , then check left exists then swap if child is smaller
-        if(rightChildPos == -1 && leftChildPos > 0)
+        if (rightChildPos == -1 && leftChildPos > 0)
         {
             var leftChildVal = heapList[leftChildPos];
             var parentVal = heapList[parentPos];
-            if(parentVal < leftChildVal)
+            if (parentVal < leftChildVal)
             {
                 heapList[parentPos] = leftChildVal;
                 heapList[leftChildPos] = parentVal;
                 parentPos = leftChildPos;
-            } else { return; }
+            }
+            else { return; }
 
-        } else if (leftChildPos != -1 && rightChildPos != -1)
+        }
+        else if (leftChildPos != -1 && rightChildPos != -1)
         {
             // If both left and right nodes are present, then choose largest and swap
             var leftChildVal = heapList[leftChildPos];
             var rightChildVal = heapList[rightChildPos];
             var parentVal = heapList[parentPos];
 
-            if((parentVal < rightChildVal) && (rightChildVal > leftChildVal))
+            if ((parentVal < rightChildVal) && (rightChildVal > leftChildVal))
             {
                 heapList[parentPos] = rightChildVal;
                 heapList[rightChildPos] = parentVal;
                 parentPos = rightChildPos;
 
-            } else if ((parentVal < leftChildVal) && (leftChildVal > rightChildVal))
+            }
+            else if ((parentVal < leftChildVal) && (leftChildVal > rightChildVal))
             {
                 heapList[parentPos] = leftChildVal;
                 heapList[leftChildPos] = parentVal;
                 parentPos = leftChildPos;
-            } else
+            }
+            else
             {
                 return;
             }
         }
         // Recursive Bubble down.
-        if(parentPos != -1 || parentPos == 0)
+        if (parentPos != -1 || parentPos == 0)
         {
             SwapMinOfBothChild(parentPos);
         }
@@ -2056,7 +2158,7 @@ public class JacobsHeapMin
     public int GetLeftChildPos(int pos)
     {
         return (2 * pos) + 1;
-    }   
+    }
     public int GetRightChildPos(int pos)
     {
         return (2 * pos) + 2;
@@ -2064,7 +2166,7 @@ public class JacobsHeapMin
 
     public int Swap(int curPos)
     {
-        if(curPos == 0)
+        if (curPos == 0)
         {
             return -1;
         }
@@ -2099,7 +2201,7 @@ public class JacobsHeapMin
 
     public void RemoveSmallest()
     {
-        if(heapList.Count == 1)
+        if (heapList.Count == 1)
         {
             heapList.RemoveAt(0);
             return;
@@ -2157,7 +2259,8 @@ public class JacobsHeapMin
     {
         int removeCount = heapList.Count - k;
 
-        for (int i = 0; i <= removeCount; i++) {
+        for (int i = 0; i <= removeCount; i++)
+        {
             RemoveSmallest();
         }
 
