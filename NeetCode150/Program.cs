@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
 
 namespace NeetCode150
 {
@@ -7,7 +8,7 @@ namespace NeetCode150
     {
         static void Main(string[] args)
         {
-            RunCharacterReplacement();
+            RunMaxSlidingWindow();
 
 
             Console.ReadLine();
@@ -17,29 +18,46 @@ namespace NeetCode150
 
         public static void RunMaxSlidingWindow()
         {
-            var nums = new int[] { 1, 2, 1, 0, 4, 2, 6 };
+            var nums = new int[] { 7, 2, 4 };
 
-            var res = MaxSlidingWindow(nums, 3);
+            var res = MaxSlidingWindow(nums, 2);
         }
 
+        // Not optimal , i need to implement my own heap to remove a specific element...
         public static int[] MaxSlidingWindow(int[] nums, int k)
         {
+            if (k == 1)
+            {
+                return nums;
+            }
             int l = 0;
 
             var maxHeap = new PriorityQueue<int, int>();
+            var outArr = new List<int>();
 
-            for (int r = 0; r < nums.Length; r++)
+            while (true)
             {
+                
+                for (int i = 0; i < k; i++)
+                {
+                    maxHeap.Enqueue(nums[l+i], -1000 - nums[l+i]);
+                }
 
+                int max = maxHeap.Dequeue();
 
+                l++;
+                maxHeap.Clear();
+                outArr.Add(max);
 
+                if (l  > nums.Length-k)
+                {
+                    break;
+                }
             }
-
-
-            return null;
+            
+            return outArr.ToArray();
 
         }
-
 
 
         #endregion
