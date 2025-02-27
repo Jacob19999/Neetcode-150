@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.PortableExecutable;
+using System.Runtime.Versioning;
 
 namespace NeetCode150
 {
@@ -9,9 +10,9 @@ namespace NeetCode150
 
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            RunGenerateParenthesis();
+            RunDailyTemperatures();
 
 
             Console.ReadLine();
@@ -19,24 +20,64 @@ namespace NeetCode150
 
         #region InProgress
 
-        public static void RunGenerateParenthesis()
+        public static void RunDailyTemperatures()
         {
-            var res = GenerateParenthesis(3);
+            var input = new int[] { 89, 62, 70, 58, 47, 47, 46, 76, 100, 70 };
+
+            var res = DailyTemperatures(input);
 
         }
 
+        public static int[] DailyTemperatures(int[] temperatures)
+        {
+            int[] res = new int[temperatures.Length];
+            Stack<int[]> stack = new Stack<int[]>(); // pair: [temp, index]
 
+            Array.Reverse(temperatures);
+            stack.Push(new int[] { temperatures[0], 0 });
+            res[0] = 0;
 
+            for (int i = 1; i < temperatures.Count(); i++)
+            {
+                var currTemp = temperatures[i];
+
+                while (stack.Count > 0)
+                {
+                    if(currTemp >= stack.Peek()[0])
+                    {
+                        stack.Pop();
+                    } else { break; } 
+                }
+
+                if(stack.Count == 0)
+                {
+                    res[i] = 0;
+                } else
+                {
+                    res[i] = i - stack.Peek()[1];
+                }
+
+                stack.Push(new int[] { currTemp, i });
+            }
+
+            Array.Reverse(res);
+
+            return res;
+        }
 
 
 
 
         #endregion
 
+        public static void RunGenerateParenthesis()
+        {
+            var res = GenerateParenthesis(3);
+        }
+
         public static List<string> GenerateParenthesis(int n)
         {
             var res = new List<string>();
-
             DecisionTreeParenthesis("(", 1, 0, n, res);
 
             return res;
