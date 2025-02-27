@@ -12,13 +12,33 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunDailyTemperatures();
+            RunCarFleet();
 
 
             Console.ReadLine();
         }
 
         #region InProgress
+
+        public static void RunCarFleet()
+        {
+
+            int target = 10;
+            int[] pos = new int[] { 4,1,0,7 };
+            int[] speed = new int[] { 2,2,1,1 };
+
+            var res = CarFleet(target, pos, speed);
+
+        }
+
+        public static int CarFleet(int target, int[] position, int[] speed)
+        {
+
+            return 0;
+        }
+
+
+        #endregion
 
         public static void RunDailyTemperatures()
         {
@@ -30,6 +50,9 @@ namespace NeetCode150
 
         public static int[] DailyTemperatures(int[] temperatures)
         {
+
+            // Can be improved by i starting from the temp.Len , so we dont need to reverse array.
+
             int[] res = new int[temperatures.Length];
             Stack<int[]> stack = new Stack<int[]>(); // pair: [temp, index]
 
@@ -43,16 +66,18 @@ namespace NeetCode150
 
                 while (stack.Count > 0)
                 {
-                    if(currTemp >= stack.Peek()[0])
+                    if (currTemp >= stack.Peek()[0])
                     {
                         stack.Pop();
-                    } else { break; } 
+                    }
+                    else { break; }
                 }
 
-                if(stack.Count == 0)
+                if (stack.Count == 0)
                 {
                     res[i] = 0;
-                } else
+                }
+                else
                 {
                     res[i] = i - stack.Peek()[1];
                 }
@@ -64,11 +89,6 @@ namespace NeetCode150
 
             return res;
         }
-
-
-
-
-        #endregion
 
         public static void RunGenerateParenthesis()
         {
