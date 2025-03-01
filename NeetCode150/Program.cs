@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.PortableExecutable;
 using System.Runtime.Versioning;
 
 namespace NeetCode150
 {
-    
-
-
     public class Program
     {
         public static void Main(string[] args)
         {
-            RunCarFleet();
+            RunImplementTrie();
 
 
             Console.ReadLine();
@@ -20,12 +19,31 @@ namespace NeetCode150
 
         #region InProgress
 
+        
+        public static void RunImplementTrie()
+        {
+            var myTrie = new PrefixTree();
+            myTrie.Insert("Dog");
+            myTrie.Insert("Dig");
+            myTrie.Insert("search");
+            myTrie.Insert("startsWith");
+            
+            Console.WriteLine("Start With " + myTrie.Search("Digf"));
+            Console.WriteLine("Start With " +  myTrie.StartsWith("stars"));
+
+        }
+
+
+
+
+        #endregion
+
         public static void RunCarFleet()
         {
 
             int target = 10;
-            int[] pos = new int[] { 4,1,0,7 };
-            int[] speed = new int[] { 2,2,1,1 };
+            int[] pos = new int[] { 4, 1, 0, 7 };
+            int[] speed = new int[] { 2, 2, 1, 1 };
 
             var res = CarFleet(target, pos, speed);
 
@@ -33,12 +51,84 @@ namespace NeetCode150
 
         public static int CarFleet(int target, int[] position, int[] speed)
         {
+            int[][] pair = new int[position.Length][];
 
-            return 0;
+            var iterStack = new Stack<double>();
+
+            for (int i = 0; i < position.Count(); i++)
+            {
+                pair[i] = new int[] { position[i], speed[i] };
+            }
+
+            Array.Sort(pair, (a, b) => b[0].CompareTo(a[0]));
+
+            for (int i = 0; i < position.Count(); i++)
+            {
+                double time = (double)(target - pair[i][0]) / pair[i][1];
+
+                if (iterStack.Count == 0 || time > iterStack.Peek())
+                {
+                    iterStack.Push(time);
+                }
+            }
+
+            return iterStack.Count();
         }
 
+        public static void RunIsSameTree()
+        {
+            var root = new TreeNode(1);
+            root.left = new TreeNode(2);
+            root.right = new TreeNode(3);
 
-        #endregion
+
+            var root2 = new TreeNode(1);
+            root2.left = new TreeNode(2);
+
+
+            var res = IsSameTree(root, root2);
+
+        }
+
+        public static bool IsSameTree(TreeNode p, TreeNode q)
+        {
+            bool res = true;
+
+            DfsTreeCheck(p, q, ref res);
+
+            return res;
+        }
+
+        public static void DfsTreeCheck(TreeNode p, TreeNode q, ref bool res)
+        {
+
+            if (p == null && q != null)
+            {
+                res = false;
+            }
+
+            if (p != null && q == null)
+            {
+                res = false;
+            }
+
+            if (p == null || q == null || res == false)
+            {
+                return;
+            }
+
+            if (p.val != q.val)
+            {
+                res = false;
+                return;
+            }
+
+            DfsTreeCheck(p.left, q.left, ref res);
+            DfsTreeCheck(p.right, q.right, ref res);
+
+            return;
+
+        }
 
         public static void RunDailyTemperatures()
         {
@@ -2547,4 +2637,104 @@ public class JacobsHeapMin
 
 }
 
+
+public class PrefixNode
+{
+    public Dictionary<char, PrefixNode> ChildrenNodes { get; set; }
+    public bool IsWord { get; set; }
+    public char c { get; set; }
+
+    public PrefixNode()
+    {
+        IsWord = false;
+        ChildrenNodes = new Dictionary<char, PrefixNode>();
+    }
+}
+
+public class PrefixTree
+{
+    private PrefixNode root;
+
+    public PrefixTree()
+    {
+        root = new PrefixNode();
+    }
+
+    public bool StartsWith(string prefix)
+    {
+        if (prefix.Length < 1)
+        {
+            return true;
+        }
+
+        PrefixNode curNode = root;
+
+        for (int i = 0; i < prefix.Length; i++)
+        {
+            if (!curNode.ChildrenNodes.TryGetValue(prefix[i], out curNode))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool Search(string word)
+    {
+        if (word.Length < 1)
+        {
+            return true;
+        }
+
+        PrefixNode curNode = root;
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            if (!curNode.ChildrenNodes.TryGetValue(word[i], out curNode))
+            {
+                return false;
+            }
+            if (i == word.Length - 1)
+            {
+                if (!curNode.IsWord)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void Insert(string word)
+    {
+        if (word.Length < 1)
+        {
+            return;
+        }
+
+        PrefixNode curNode = root;
+        PrefixNode nextNode;
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            // If the node is aready present 
+            if (!curNode.ChildrenNodes.TryGetValue(word[i], out nextNode))
+            {
+                nextNode = new PrefixNode();
+                nextNode.c = word[i];
+                curNode.ChildrenNodes.Add(word[i], nextNode);
+            }
+
+            curNode = nextNode;
+
+            if (i == word.Length - 1)
+            {
+                curNode.IsWord = true;
+            }
+
+        }
+
+    }
+
+}
 #endregion
