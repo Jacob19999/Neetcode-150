@@ -19,7 +19,13 @@ namespace NeetCode150
 
         #region InProgress
 
-        
+
+
+
+
+
+        #endregion
+
         public static void RunImplementTrie()
         {
             var myTrie = new PrefixTree();
@@ -27,16 +33,12 @@ namespace NeetCode150
             myTrie.Insert("Dig");
             myTrie.Insert("search");
             myTrie.Insert("startsWith");
-            
+
             Console.WriteLine("Start With " + myTrie.Search("Digf"));
-            Console.WriteLine("Start With " +  myTrie.StartsWith("stars"));
+            Console.WriteLine("Start With " + myTrie.StartsWith("stars"));
 
         }
 
-
-
-
-        #endregion
 
         public static void RunCarFleet()
         {
