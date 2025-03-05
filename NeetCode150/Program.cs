@@ -2,8 +2,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
+using System.Security.Cryptography;
+using System.Xml;
 
 namespace NeetCode150
 {
@@ -11,7 +15,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunImplementTrie();
+            RunSubsets();
 
 
             Console.ReadLine();
@@ -19,12 +23,58 @@ namespace NeetCode150
 
         #region InProgress
 
+        public static void RunSubsets()
+        {
+            var input = new int[] { 1, 2, 3};
+            Subsets(input);
+
+        }
+        public static List<List<int>> Subsets(int[] nums)
+        {
+            var res = new List<List<int>>();
+            BacktrackSubset(nums, 0, new List<int>(), res);
+            return res;
+        }
+
+        private static void BacktrackSubset(int[] nums, int index, List<int> current, List<List<int>> res)
+        {
+
+            if (index > nums.Length - 1)
+            {
+                res.Add(new List<int>(current));
+                return;
+            }
+
+            current.Add(nums[index]);
+            BacktrackSubset(nums, index + 1, current, res);
+            current.RemoveAt(current.Count - 1);
+            BacktrackSubset(nums, index + 1, current, res);
+
+        }
+
+
 
 
 
 
 
         #endregion
+
+        public static void RunWordDictionary()
+        {
+            var myTrie = new WordDictionary();
+            myTrie.AddWord("Day");
+            myTrie.AddWord("Bay");
+            myTrie.AddWord("May");
+            myTrie.AddWord("startsWith");
+
+            Console.WriteLine(myTrie.Search(".ay").ToString());
+            Console.WriteLine(myTrie.Search("M..").ToString());
+            Console.WriteLine(myTrie.Search("Mayi").ToString());
+
+            Console.WriteLine(myTrie.Search("..With").ToString());
+        }
+
 
         public static void RunImplementTrie()
         {
@@ -2738,5 +2788,140 @@ public class PrefixTree
 
     }
 
+}
+
+public class WordDictNode
+{
+    public Dictionary<char, WordDictNode> childNode;
+
+    public WordDictNode prevNode;
+    public bool isWord;
+    public char c;
+
+    public WordDictNode()
+    {
+        childNode = new Dictionary<char, WordDictNode>();
+        isWord = false;
+    }
+
+}
+
+
+public class WordDictionary
+{
+    private WordDictNode root;
+    public List<WordDictNode> edgeNodes;
+
+    public WordDictionary()
+    {
+        root = new WordDictNode();
+        edgeNodes = new List<WordDictNode>();
+    }
+
+    public void AddWord(string word)
+    {
+        var currNode = root;
+        WordDictNode nextNode = new WordDictNode();
+        WordDictNode prevNode = new WordDictNode();
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            if (!currNode.childNode.TryGetValue(word[i], out nextNode))
+            {
+                nextNode = new WordDictNode();
+                nextNode.c = word[i];
+                currNode.childNode.Add(word[i], nextNode);
+            }
+
+            nextNode.prevNode = currNode;
+            prevNode = currNode;
+
+            currNode = nextNode;
+
+            if (i == word.Length - 1)
+            {
+                currNode.isWord = true;
+                currNode.c = word[i];
+                edgeNodes.Add(currNode);
+            }
+        }
+    }
+
+    public bool Search(string word)
+    {
+        var res = false;
+        var edges = new List<WordDictNode>();
+
+        if (word[0] == 46)
+        {
+            var lastC = word[word.Length - 1];
+            foreach (var e in edgeNodes)
+            {
+                if (e.c == lastC)
+                {
+                    res = findWordFromEdge(e, word, 0);
+                    if (res == true)
+                    {
+                        return res;
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            res = findWordFromRoot(root, word, 0);
+            if (res == true)
+            {
+                return res;
+            }
+        }
+
+        return res;
+    }
+
+
+    private bool findWordFromRoot(WordDictNode node, string word, int counter)
+    {
+        bool res = false; ;
+        if (counter > word.Length - 1)
+        {
+            return true;
+        }
+
+        var c = word[counter];
+
+        if (node.childNode.TryGetValue(c, out node))
+        {
+            if (node.c == c || c == 46)
+            {
+                res = findWordFromEdge(node, word, counter + 1);
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+        return res;
+    }
+
+    private bool findWordFromEdge(WordDictNode node, string word, int counter)
+    {
+        bool res = false;
+        if (node.prevNode == root || counter > word.Length - 1)
+        {
+            return true;
+        }
+
+        var c = word[word.Length - counter - 1];
+
+        if (node.c == c || c == 46)
+        {
+            res = findWordFromEdge(node.prevNode, word, counter + 1);
+        }
+
+        return res;
+    }
 }
 #endregion
