@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Xml;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NeetCode150
 {
@@ -16,7 +17,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunSubsets();
+            RunCombinationSum();
 
 
             Console.ReadLine();
@@ -24,9 +25,58 @@ namespace NeetCode150
 
         #region InProgress
 
+
+
+
+        #endregion
+
+        public static void RunCombinationSum()
+        {
+            var input = new int[] { 8, 7, 4, 3 };
+            var res = CombinationSum(input, 11);
+        }
+
+        public static List<List<int>> CombinationSum(int[] nums, int target)
+        {
+
+            Array.Sort(nums);
+            var res = BackTrackCombiSum(nums, new List<int>(), 0, 0, target, new List<List<int>>());
+
+            return res;
+        }
+
+        public static List<List<int>> BackTrackCombiSum(int[] nums, List<int> subAry, int ele, int curSum, int target, List<List<int>> res)
+        {
+            // The target 
+            if (curSum == target)
+            {
+                res.Add(new List<int>(subAry));
+                return res;
+            }
+
+            // Boundinf Function 
+            if (ele >= nums.Length || curSum + nums[ele] > target)
+            {
+                return res;
+            }
+
+            // Select to add element
+            subAry.Add(nums[ele]);
+            curSum += nums[ele];
+            BackTrackCombiSum(nums, subAry, ele, curSum, target, res);
+
+            // Backtrack
+            subAry.RemoveAt(subAry.Count - 1);
+            curSum -= nums[ele];
+
+            BackTrackCombiSum(nums, subAry, ele + 1, curSum, target, res);
+
+            return res;
+        }
+
         public static void RunSubsets()
         {
-            var input = new int[] { 1, 2, 3};
+            var input = new int[] { 1, 2, 3 };
             Subsets(input);
 
         }
@@ -52,13 +102,6 @@ namespace NeetCode150
             BacktrackSubset(nums, index + 1, current, res);
 
         }
-
-
-
-
-
-
-        #endregion
 
         public static void RunWordDictionary()
         {
