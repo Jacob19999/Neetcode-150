@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
@@ -17,7 +18,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunCombinationSum();
+            RunCombinationSum2();
 
 
             Console.ReadLine();
@@ -29,6 +30,57 @@ namespace NeetCode150
 
 
         #endregion
+
+        public static void RunCombinationSum2()
+        {
+            var input = new int[] { 1, 2, 3, 4, 5 };
+            var res = CombinationSum2(input, 7);
+
+        }
+        public static List<List<int>> CombinationSum2(int[] candidates, int target)
+        {
+            Array.Sort(candidates);
+
+            var res = CombiSum2BackTrack(candidates, target, 0, new List<int>(), 0, new List<List<int>>());
+
+            return res;
+        }
+
+
+        public static List<List<int>> CombiSum2BackTrack(int[] candi, int target, int curEle, List<int> subAry, int sum, List<List<int>> res)
+        {
+            if (curEle > candi.Length - 1 || sum + candi[curEle] > target)
+            {
+                return res;
+            }
+
+            if (sum + candi[curEle] == target)
+            {
+                var temp = new List<int>(subAry);
+                temp.Add(candi[curEle]);
+                res.Add(temp);
+
+                return res;
+            }
+
+            subAry.Add(candi[curEle]);
+            CombiSum2BackTrack(candi, target, curEle + 1, subAry, sum + candi[curEle], res);
+
+            // Backtrack !
+            subAry.RemoveAt(subAry.Count - 1);
+            sum -= candi[curEle];
+
+            // Skip Pass Duplicates
+            int next = curEle + 1;
+            while (next < candi.Length && candi[next] == candi[curEle])
+            {
+                next++;
+            }
+
+            CombiSum2BackTrack(candi, target, next, subAry, sum + candi[curEle], res);
+
+            return res;
+        }
 
         public static void RunCombinationSum()
         {
