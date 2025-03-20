@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace NeetCode150
 {
@@ -6,8 +7,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunPermute();
-
+            RunSubsetsWithDup();
 
             Console.ReadLine();
         }
@@ -16,7 +16,71 @@ namespace NeetCode150
 
 
 
+
+
+
+
         #endregion
+
+        public static void RunSubsetsWithDup()
+        {
+            var input = new int[] { 1, 2, 1 };
+            SubsetsWithDup(input);
+        }
+
+        public static List<List<int>> SubsetsWithDup(int[] nums)
+        {
+            var res = new List<List<int>>();
+            var resNum = new List<List<int>>();
+            var memo = new HashSet<string>();
+
+            Array.Sort(nums);
+            // Map num to index
+            var convertedNum = new List<int>();
+            for (int i = 0; i < nums.Length; i++)
+            { convertedNum.Add(i); }
+
+            BackTkSubsets2(res, convertedNum, new List<int>(), 0);
+
+            // Convert index back to Nums and check for duplicates
+            foreach (var lst in res)
+            {
+                var temp = new List<int>();
+                string str = "";
+                foreach (var i in lst)
+                {
+                    str += nums[i].ToString();
+                    temp.Add(nums[i]);
+                }
+                if (!memo.Contains(str))
+                {
+                    resNum.Add(temp);
+                    memo.Add(str);
+                }
+            }
+            return resNum;
+        }
+
+        public static void BackTkSubsets2(List<List<int>> res, List<int> nums, List<int> subArr, int choice)
+        {
+            // Bounding Function.
+            if (choice > nums.Count) { return; }
+            res.Add(new List<int>(subArr));
+
+            // Choices , only get numbers to the right.
+            var choices = new List<int>();
+            for (int i = choice; i < nums.Count; i++) { choices.Add(i); }
+
+            // Recurse and backtrack.
+            foreach (var c in choices)
+            {
+                subArr.Add(nums[c]);
+                BackTkSubsets2(res, nums, subArr, c + 1);
+
+                subArr.Remove(nums[c]);
+
+            }
+        }
 
         public static void RunPermute()
         {
