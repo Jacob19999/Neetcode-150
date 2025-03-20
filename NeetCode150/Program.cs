@@ -1,16 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-using System.Security.Cryptography;
-using System.Xml;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System;
 
 namespace NeetCode150
 {
@@ -18,7 +6,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunCombinationSum2();
+            RunPermute();
 
 
             Console.ReadLine();
@@ -28,8 +16,51 @@ namespace NeetCode150
 
 
 
-
         #endregion
+
+        public static void RunPermute()
+        {
+            var input = new int[] { 1, 3, 5, 7, 9, 10, 15 };
+            var res = Permute(input);
+        }
+
+        public static List<List<int>> Permute(int[] nums)
+        {
+            var res = new List<List<int>>();
+
+            PermuteBackTrk(nums, new List<int>(), res);
+
+            return res;
+        }
+
+        public static void PermuteBackTrk(int[] nums, List<int> subAry, List<List<int>> res)
+        {
+            // Bounding
+            if (subAry.Count == nums.Length)
+            {
+                res.Add(new List<int>(subAry));
+            }
+
+            // DFS Down
+            foreach (var choice in PermuteGetChoice(nums, subAry))
+            {
+                subAry.Add(choice);
+
+                PermuteBackTrk(nums, subAry, res); // Recurse
+
+                subAry.Remove(choice); // BackTrack Rm
+            }
+        }
+
+        public static List<int> PermuteGetChoice(int[] arr, List<int> subArr)
+        {
+            var res = new List<int>();
+            foreach (var i in arr)
+            {
+                if (!subArr.Contains(i)) { res.Add(i); }
+            }
+            return res;
+        }
 
         public static void RunCombinationSum2()
         {
