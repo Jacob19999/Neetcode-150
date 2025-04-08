@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Data;
 using System.Globalization;
+using System.Runtime.ExceptionServices;
+using System.Runtime.Intrinsics.Arm;
 
 namespace NeetCode150
 {
@@ -7,20 +10,278 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunSubsetsWithDup();
+            RunSearchMatrix();
 
             Console.ReadLine();
         }
 
         #region InProgress
 
+        public static void RunSearchMatrix()
+        {
+
+            int[][] input = new int[][]
+            {
+                new int[] { 1,2,4,8 },
+                new int[] { 10,11,12,13 },
+                new int[] { 14, 20, 30, 40 }
+            };
+
+            var res = SearchMatrix(input, 10);
+
+        }
+
+        public static bool SearchMatrix(int[][] matrix, int target)
+        {
+            int size = matrix.Length * matrix[0].Length;
+
+            DFSSearchMat(matrix, target, size, 0, 0, matrix.Length - 1, matrix[0].Length - 1);
+
+            return false;
+        }
+
+        public static bool DFSSearchMat(int[][] matrix, int target, int size, int r1, int c1, int r4, int c4)
+        {
+
+            if(r1 ==  r4 && c1 == c4)
+            {
+                return false;
+            }
+
+            // Partition
+            int p1 = size / 2;
+            int p2 = size - p1;
+
+            int newR2 = r1 + (p1 / matrix[0].Length);
+            int newC2 = c1 + (p1 % matrix[0].Length) - 1;
+
+            int newR3 = r1 + ((p1 + 1) / matrix[0].Length);
+            int newC3 = c1 + ((p1 + 1) % matrix[0].Length) - 1;
+
+            DFSSearchMat(matrix, target, p1, r1, c1, newR2, newC2);
+            DFSSearchMat(matrix, target, p2, newR3, newC3, r4, c4);
 
 
+
+
+
+            return false;
+        }
 
 
 
 
         #endregion
+        public static void RunNextGreaterElement()
+        {
+            var nums1 = new[] { 2, 4 };
+            var nums2 = new[] { 1, 2, 3, 4 };
+
+            var res = NextGreaterElement(nums1, nums2);
+        }
+
+        public static int[] NextGreaterElement(int[] nums1, int[] nums2)
+        {
+            if (nums2.Length == 0) return new int[nums1.Length];
+
+            // Create dic to store is greater dict
+            var dict = new Dictionary<int, int>();
+            int greater = nums2[nums2.Length - 1];
+            dict.Add(nums2[nums2.Length - 1], -1);
+
+            for (int i = nums2.Length - 2; i >= 0; i--)
+            {
+                if (nums2[i] < nums2[i + 1])
+                {
+
+                    dict.Add(nums2[i], nums2[i + 1]);
+                }
+                else if (nums2[i] < greater)
+                {
+                    dict.Add(nums2[i], greater);
+                }
+                else
+                {
+                    dict.Add(nums2[i], -1);
+                }
+
+                if (nums2[i] > greater)
+                {
+                    greater = nums2[i];
+                }
+            }
+
+            var res = new int[nums1.Length];
+
+            for (int i = 0; i < nums1.Length; i++)
+            {
+                int temp = -1;
+                dict.TryGetValue(nums1[i], out temp);
+                res[i] = temp;
+            }
+
+            return res;
+        }
+
+
+
+
+
+
+
+
+
+        public static void RunNonRepeatingChar()
+        {
+            string input1 = "aabbcc"; // -1
+
+            Console.WriteLine("Answer is : " + NoNRepeatedChar(input1).ToString());
+        }
+
+        public static int NoNRepeatedChar(string input)
+        {
+
+            var dict = new Dictionary<char, int>();
+
+            // Subproblem 1 . Creating the dict and are populating the count for each charactor
+            foreach (char c in input)
+            {
+                if (dict.ContainsKey(c))
+                {
+                    dict[c] += 1;
+                } else
+                {
+                    dict[c] = 1;
+                }
+            }
+
+            // Subproblem 2 . Iterate through each char , find the first char where value == 1
+
+            for(int i= 0; i < input.Count(); i++)
+            {
+                // Lookup the dict
+                if (dict.ContainsKey(input[i]))
+                {
+                    // Retrives the value from dict
+                    int value = dict[ input[i]];
+                    if(value == 1)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            // If non if the char is unique , return -1
+            return -1;
+        }
+
+
+
+
+
+
+        public static void RunExistWordSearch()
+        {
+            char[][] board = new char[][]
+            {
+                new char[] { 'A', 'B', 'C', 'D' },
+                new char[] { 'S', 'A', 'A', 'T' },
+                new char[] { 'A', 'C', 'A', 'E' }
+            };
+
+            char[][] board2 = new char[][]
+            {
+                new char[] { 'A', 'B', 'C', 'E' },
+                new char[] { 'S', 'F', 'C', 'S' },
+                new char[] { 'A', 'D', 'E', 'E' }
+            };
+
+            char[][] board3 = new char[][]
+            {
+                new char[] { 'a', 'b' },
+                new char[] { 'c', 'd'},
+            };
+
+            char[][] board4 = new char[][]
+            {
+                new char[] { 'C', 'A', 'A' },
+                new char[] { 'A', 'A', 'A' },
+                new char[] { 'B', 'C', 'D' },
+            };
+
+            char[][] board5 = new char[][]
+            {
+                new char[] { 'A', 'B', 'C', 'E' },
+                new char[] { 'S', 'F', 'E', 'S' },
+                new char[] { 'A', 'D', 'E', 'E' },
+            };
+
+            var res = WordSearchExist(board5, "ABCESEEEFS");
+        }
+
+        public static bool WordSearchExist(char[][] board, string word)
+        {
+
+            int r = board.Length;
+            int c = board[0].Length;
+
+            for (int i = 0; i < r; i++)
+            {
+                for (int j = 0; j < c; j++)
+                {
+                    if (board[i][j] == word[0])
+                    {
+                        if (WordSearchBk(board, word, 0, i, j, new HashSet<string>()))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static bool WordSearchBk(char[][] board, string word, int wordIdx, int r, int c, HashSet<string> memo)
+        {
+
+            // Check Bounds of position
+            if (r < 0 || r >= board.Length || c < 0 || c >= board[0].Length || wordIdx >= word.Length)
+            {
+                return false;
+            }
+
+            var curVal = board[r][c];
+            string currentPos = r + "," + c;
+
+            // Check if path is visited
+            if (memo.Contains(currentPos))
+            {
+                return false;
+            }
+
+            if (word[wordIdx] == curVal)
+            {
+                if (wordIdx == word.Length - 1)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            memo.Add(currentPos);
+
+            var res = WordSearchBk(board, word, wordIdx + 1, r + 1, c, memo) ||
+                  WordSearchBk(board, word, wordIdx + 1, r - 1, c, memo) ||
+                  WordSearchBk(board, word, wordIdx + 1, r, c + 1, memo) ||
+                  WordSearchBk(board, word, wordIdx + 1, r, c - 1, memo);
+
+            memo.Remove(currentPos);
+
+            return res;
+        }
 
         public static void RunSubsetsWithDup()
         {
@@ -317,19 +578,42 @@ namespace NeetCode150
             return iterStack.Count();
         }
 
-        public static void RunIsSameTree()
+        public static bool RunIsSameTree()
         {
-            var root = new TreeNode(1);
-            root.left = new TreeNode(2);
-            root.right = new TreeNode(3);
+            // Tree 1
+            var root = new TreeNode(4);
+            root.left = new TreeNode(7);
 
+            // Tree 2
+            var root2 = new TreeNode(4);
+            root2.right = new TreeNode(7);
 
-            var root2 = new TreeNode(1);
-            root2.left = new TreeNode(2);
+            var listRes1 = new List<int>();
+            var listRes2 = new List<int>();
 
+            DFS(root, listRes1);
+            DFS(root2, listRes2);
 
-            var res = IsSameTree(root, root2);
+            // Subproblem 2 , compare both list to make sure they are same. 
+            var res = listRes1.SequenceEqual(listRes2);
 
+            return res;
+        }
+
+        public static void DFS(TreeNode node, List<int> res)
+        {
+            // Bounding functions 
+            if (node == null)
+            {
+                res.Add(-100);
+                return;
+            } else
+            {
+                res.Add(node.val);
+            }
+
+            DFS(node.left, res);
+            DFS(node.right, res);
         }
 
         public static bool IsSameTree(TreeNode p, TreeNode q)
@@ -2308,6 +2592,7 @@ namespace NeetCode150
         #endregion
     }
 }
+
 
 
 
