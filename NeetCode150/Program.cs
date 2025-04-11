@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Intrinsics.Arm;
 
@@ -10,12 +11,14 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunSearchMatrix();
+            RunSearch2DMat();
 
             Console.ReadLine();
         }
 
         #region InProgress
+
+
 
         public static void RunSearchMatrix()
         {
@@ -27,7 +30,9 @@ namespace NeetCode150
                 new int[] { 14, 20, 30, 40 }
             };
 
-            var res = SearchMatrix(input, 10);
+
+
+            var res = SearchMatrix(input, 3);
 
         }
 
@@ -62,9 +67,6 @@ namespace NeetCode150
             DFSSearchMat(matrix, target, p2, newR3, newC3, r4, c4);
 
 
-
-
-
             return false;
         }
 
@@ -72,6 +74,78 @@ namespace NeetCode150
 
 
         #endregion
+
+        public static void RunSearch2DMat()
+        {
+
+            var input = new int[][] {
+                new int[] { 1, 3, 4, 8 },
+                new int[] { 10, 11, 12, 13 },
+                new int[] { 14, 20, 30, 40 },
+            };
+
+            int[][] input2 = new int[][]
+            {
+                new int[] { 1 },
+                new int[] { 3 }
+            };
+
+            var res = SearchMatrix2D(input2, 3);
+        }
+
+
+        public static bool SearchMatrix2D(int[][] matrix, int target)
+        {
+            if (matrix.Length < 2)
+            {
+                // Refactor this out to separate binary search function...
+                foreach (var num in matrix.First())
+                {
+                    if (target == num)
+                    {
+                        return true;
+                    }
+                    if (num > target)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < matrix.Length - 1; i++)
+            {
+                var arr = matrix[i];
+                var nextArr = matrix[i + 1];
+
+
+                if (target > arr.Last() && target <= nextArr.Last() && target >= nextArr.First())
+                {
+                    // Select Second Arry
+                    arr = nextArr;
+                }
+
+                if (target > arr.Last() && target < nextArr.First())
+                {
+                    return false;
+                }
+
+                // Refactor this out to separate binary search function...
+                foreach (var num in arr)
+                {
+                    if (target == num)
+                    {
+                        return true;
+                    }
+                    if (num > target || target > arr.Last())
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public static void RunNextGreaterElement()
         {
             var nums1 = new[] { 2, 4 };
