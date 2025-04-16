@@ -11,7 +11,7 @@ namespace NeetCode150
     {
         public static void Main(string[] args)
         {
-            RunSearch2DMat();
+            RunMaxAreaOfIsland();
 
             Console.ReadLine();
         }
@@ -19,7 +19,7 @@ namespace NeetCode150
         #region InProgress
 
 
-
+        // Too much brain .... Will come back to finish this....
         public static void RunSearchMatrix()
         {
 
@@ -74,6 +74,169 @@ namespace NeetCode150
 
 
         #endregion
+
+        public static void RunMaxAreaOfIsland()
+        {
+
+            var input = new int[][]
+            {
+                new int[] { 0, 1, 1, 0, 1 },
+                new int[] { 1, 0, 1, 0, 1 },
+                new int[] { 0, 1, 1, 0, 1 },
+                new int[] { 0, 1, 0, 0, 1 }
+            };
+
+            var res = MaxAreaOfIsland(input);
+
+        }
+        public static int MaxAreaOfIsland(int[][] grid)
+        {
+            int maxArea = 0;
+            var visited = new Dictionary<string, int>();
+
+            for (int r = 0; r < grid.Length; r++)
+            {
+                for (int c = 0; c < grid[0].Length; c++)
+                {
+                    if (visited.ContainsKey($"{r} | {c}"))
+                    {
+                        continue;
+                    }
+
+                    if (grid[r][c] == 1)
+                    {
+                        int curArea = DFSMaxAreaOfIsland(grid, r, c, visited, 0);
+                        maxArea = Math.Max(curArea, maxArea);
+
+                    }
+                }
+            }
+
+            return maxArea;
+        }
+
+        public static int DFSMaxAreaOfIsland(int[][] grid, int r, int c, Dictionary<string, int> visited, int curArea)
+        {
+            // Bounding Function
+            if (r < 0 || c < 0 || r >= grid.Length || c >= grid[0].Length)
+            {
+                return curArea;
+            }
+
+            if (grid[r][c] == 0)
+            {
+                return curArea;
+            }
+
+            if (!visited.ContainsKey($"{r} | {c}") && grid[r][c] == 1)
+            {
+                visited.Add($"{r} | {c}", 1);
+            }
+            else
+            {
+                return curArea;
+            }
+
+            curArea += 1;
+
+            // DFS Section
+            curArea = DFSMaxAreaOfIsland(grid, r + 1, c, visited, curArea);
+            // DFS Down
+            curArea = DFSMaxAreaOfIsland(grid, r - 1, c, visited, curArea);
+            // DFS Right
+            curArea = DFSMaxAreaOfIsland(grid, r, c + 1, visited, curArea);
+            // DFS Left
+            curArea = DFSMaxAreaOfIsland(grid, r, c - 1, visited, curArea);
+
+            return curArea;
+        }
+
+        public static void RunNumberOfIslands()
+        {
+
+            var input = new char[][]
+            {
+                new char[] { '0', '1', '1', '1', '0' },
+                new char[] { '0', '1', '0', '1', '0' },
+                new char[] { '1', '1', '0', '0', '0' },
+                new char[] { '0', '0', '0', '0', '0' }
+            };
+
+
+            var input2 = new char[][]
+            {
+                new char[] { '1', '1', '0', '0', '1' },
+                new char[] { '1', '1', '0', '0', '1' },
+                new char[] { '0', '0', '1', '0', '0' },
+                new char[] { '0', '0', '0', '1', '1' }
+
+            };
+
+
+            var res = NumIslands(input2);
+
+        }
+
+        public static int NumIslands(char[][] grid)
+        {
+            var visited = new Dictionary<string, char>();
+            int islandCount = 0;
+
+            for (int r = 0; r < grid.Length; r++)
+            {
+                for (int c = 0; c < grid[0].Length; c++)
+                {
+                    // If we already visited the cell, then skip
+                    if (visited.ContainsKey($"{r} | {c}"))
+                    {
+                        continue;
+                    }
+
+                    if (grid[r][c] == '1')
+                    {
+                        // DFS 
+                        DFSNumOfIslands(grid, r, c, visited);
+
+                        islandCount++;
+                    }
+                }
+            }
+
+            return islandCount;
+        }
+
+        public static void DFSNumOfIslands(char[][] grid, int r, int c, Dictionary<string, char> visited)
+        {
+
+            if (r < 0 || c < 0 || r >= grid.Length || c >= grid[0].Length || grid[r][c] == '0')
+            {
+                return;
+            }
+
+            if (!visited.ContainsKey($"{r} | {c}") && grid[r][c] == '1')
+            {
+                visited.Add($"{r} | {c}", grid[r][c]);
+            }
+            else
+            {
+                return;
+            }
+
+            if (grid[r][c] == '0')
+            {
+                return;
+            }
+
+            // DFS Up
+            DFSNumOfIslands(grid, r + 1, c, visited);
+            // DFS Down
+            DFSNumOfIslands(grid, r - 1, c, visited);
+            // DFS Right
+            DFSNumOfIslands(grid, r, c + 1, visited);
+            // DFS Left
+            DFSNumOfIslands(grid, r, c - 1, visited);
+
+        }
 
         public static void RunSearch2DMat()
         {
