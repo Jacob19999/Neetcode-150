@@ -4,19 +4,106 @@ using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Intrinsics.Arm;
+using System.Xml.Linq;
 
 namespace NeetCode150
 {
+    public class NodeGraph
+    {
+        public int val;
+        public IList<NodeGraph> neighbors;
+
+        public NodeGraph()
+        {
+            val = 0;
+            neighbors = new List<NodeGraph>();
+        }
+
+        public NodeGraph(int _val)
+        {
+            val = _val;
+            neighbors = new List<NodeGraph>();
+        }
+
+        public NodeGraph(int _val, List<NodeGraph> _neighbors)
+        {
+            val = _val;
+            neighbors = _neighbors;
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
         {
-            RunMaxAreaOfIsland();
+            RunHasCycle();
+
 
             Console.ReadLine();
         }
 
         #region InProgress
+
+
+    
+       
+
+
+        public static void RunCloneGraph()
+        {
+            var node1 = new NodeGraph(1);
+            var node2 = new NodeGraph(2);
+            var node3 = new NodeGraph(3);
+
+            node1.neighbors.Add(node2);
+            node2.neighbors.Add(node1);
+            node2.neighbors.Add(node3);
+            node3.neighbors.Add(node2);
+
+            var newNodes = CloneGraph(node1);
+
+        }
+
+
+
+        public static NodeGraph CloneGraph(NodeGraph node)
+        {
+            var newNode1 = new NodeGraph(1);
+            var nodeDict = new HashSet<NodeGraph>();
+
+            NodeGraphSearch(node, nodeDict, newNode1);
+
+            return newNode1;
+        }
+
+        public static void NodeGraphSearch(NodeGraph node, HashSet<NodeGraph> dict, NodeGraph newNode)
+        {
+            if(node == null)
+            {
+                return;
+            }
+
+            Console.WriteLine("Node: " + node.val);
+            if (!dict.Contains(node))
+            {
+                dict.Add(node);
+            } else
+            {
+                return;
+            }
+
+            foreach (var n in node.neighbors)
+            {
+                var clone = new NodeGraph(n.val);
+                newNode.neighbors.Add(clone);
+                NodeGraphSearch(n, dict, clone);
+            }
+
+        }
+
+
+
+
 
 
         // Too much brain .... Will come back to finish this....
@@ -74,6 +161,54 @@ namespace NeetCode150
 
 
         #endregion
+
+
+        public static void RunHasCycle()
+        {
+
+            var list1Head = new ListNode();
+
+            list1Head.val = 1;
+            list1Head.next = new ListNode() { val = 2 };
+            list1Head.next.next = new ListNode() { val = 3 };
+            list1Head.next.next.next = new ListNode() { val = 4 };
+
+            list1Head.next.next.next = list1Head;
+
+            var res = HasCycle(list1Head);
+
+        }
+
+
+        public static bool HasCycle(ListNode head)
+        {
+            var visited = new HashSet<ListNode>();
+            var res = HasCycleDFS(head, visited, false);
+
+            return res;
+        }
+
+
+        public static bool HasCycleDFS(ListNode node, HashSet<ListNode> visited, bool res)
+        {
+            if (node == null)
+            {
+                return res;
+            }
+
+            if (!visited.Contains(node))
+            {
+                visited.Add(node);
+            }
+            else
+            {
+                return true;
+            }
+
+            res = HasCycleDFS(node.next, visited, res);
+
+            return res;
+        }
 
         public static void RunMaxAreaOfIsland()
         {
