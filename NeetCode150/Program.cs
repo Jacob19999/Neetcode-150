@@ -3,52 +3,110 @@ using System.Data;
 using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.Arm;
 using System.Xml.Linq;
 
 namespace NeetCode150
 {
-    public class NodeGraph
-    {
-        public int val;
-        public IList<NodeGraph> neighbors;
-
-        public NodeGraph()
-        {
-            val = 0;
-            neighbors = new List<NodeGraph>();
-        }
-
-        public NodeGraph(int _val)
-        {
-            val = _val;
-            neighbors = new List<NodeGraph>();
-        }
-
-        public NodeGraph(int _val, List<NodeGraph> _neighbors)
-        {
-            val = _val;
-            neighbors = _neighbors;
-        }
-    }
-
     public class Program
     {
         public static void Main(string[] args)
         {
-            RunHasCycle();
 
+            Console.WriteLine(PartitionSubStr("aab"));
 
             Console.ReadLine();
         }
 
+
         #region InProgress
+        public static List<List<string>> PartitionSubStr(string s) {
+            var memo = new HashSet<string>();
+            // Remove from string
+            int rmPos = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                // Recurse Down
+                var res = PartitionSubStrBacktrack(s, memo, rmPos);
+
+                // Backtrack
+                var revStr = s.Insert(rmPos, res[1]);
+
+                // Next branch
+                var res2 = PartitionSubStrBacktrack(s, memo, rmPos + 1);
+            }
 
 
-    
-       
+
+            return new List<List<string>>();
+            
+        }
+
+        private static List<string> PartitionSubStrBacktrack(string s, HashSet<string> memo, int rmPos)
+        {
+            var temp = s[rmPos].ToString();
+            var subStr = new string(s.Remove(rmPos));
+
+            if (checkPalindrome(subStr))
+            {
+                memo.Add(s);
+            }
+
+            return new List<string> { subStr, temp } ;
+        }
+
+        private static bool checkPalindrome(string s)
+        {
+            if (s.Length <= 1)
+            {
+                return true;
+            }
+
+            string revStr = new string(s.Reverse().ToString());
+
+            return s.Equals(revStr, StringComparison.OrdinalIgnoreCase);
 
 
+
+        }
+
+
+
+
+
+
+
+
+    #endregion
+
+
+        public class NodeGraph
+        {
+            public int val;
+            public IList<NodeGraph> neighbors;
+
+            public NodeGraph()
+            {
+                val = 0;
+                neighbors = new List<NodeGraph>();
+            }
+
+            public NodeGraph(int _val)
+            {
+                val = _val;
+                neighbors = new List<NodeGraph>();
+            }
+
+            public NodeGraph(int _val, List<NodeGraph> _neighbors)
+            {
+                val = _val;
+                neighbors = _neighbors;
+            }
+        }
+
+        
         public static void RunCloneGraph()
         {
             var node1 = new NodeGraph(1);
@@ -156,11 +214,6 @@ namespace NeetCode150
 
             return false;
         }
-
-
-
-
-        #endregion
 
 
         public static void RunHasCycle()
